@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three Trees Job Board</title>
+<style>
+    body {
+        background-color: #2b1c11; /* Dark wood base */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1597113366853-fea190b6cd82?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-attachment: fixed;
+        color: #d6c5b3;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        margin: 0;
+        padding: 30px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 34px;
+        margin: 0 0 35px 0;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        border-bottom: 3px double #d6c5b3;
+        padding-bottom: 10px;
+        color: #d6c5b3;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        font-family: 'Georgia', serif;
+        font-weight: bold;
+    }
+    .board {
+        column-count: 3;
+        column-gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    /* Responsive layout for smaller screens */
+    @media (max-width: 900px) {
+        .board { column-count: 2; }
+    }
+    @media (max-width: 600px) {
+        .board { column-count: 1; }
+    }
+    .notice {
+        break-inside: avoid;
+        margin-bottom: 30px;
+        background: #d4c5b0; /* Dirty, weathered paper */
+        border: 2px solid #5c4326;
+        border-bottom: 4px solid #4a331c; /* Heavy bottom edge */
+        border-right: 3px solid #4a331c;
+        border-radius: 1px;
+        padding: 25px 15px 15px 15px;
+        box-shadow: 4px 5px 10px rgba(0,0,0,0.7);
+        position: relative;
+        line-height: 1.4;
+        color: #1a110a;
+        font-weight: bold;
+    }
+    /* Make them look hastily nailed up */
+    .notice:nth-child(odd) { transform: rotate(-1.5deg); }
+    .notice:nth-child(even) { transform: rotate(2deg); }
+    .notice:nth-child(3n) { transform: rotate(-2.5deg); }
+
+    /* Rusted iron nail effect */
+    .notice::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        background-color: #2b1c11; /* Rusted dark iron */
+        border-radius: 50%;
+        box-shadow: 2px 2px 3px rgba(0,0,0,0.8), inset -2px -2px 4px #5c1818;
+    }
+    .reward {
+        display: inline-block;
+        font-weight: bold;
+        color: #7a1b1b; /* Dried blood red */
+        margin-top: 10px;
+        margin-bottom: 5px;
+        padding: 2px 6px;
+        border: 2px solid #7a1b1b;
+        border-radius: 2px;
+        transform: rotate(-2deg);
+        font-family: 'Arial Black', Impact, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .description {
+        display: block;
+        font-size: 13px;
+        font-family: 'Georgia', serif;
+        font-style: italic;
+        color: #3b2818;
+        margin-top: 8px;
+        padding-left: 10px;
+        border-left: 3px solid #8b6b4a;
+    }
+    strong {
+        color: #1a110a;
+        font-family: 'Arial Black', Impact, sans-serif;
+        text-transform: uppercase;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Three Trees Job Board</h1>
+
+<div class="board">
+
+    <div class="notice">
+        <strong>Help wanted!</strong> Chicken turns neon green when in moonlight. Inquire at the Vance home.
+    </div>
+
+    <div class="notice">
+        <strong>Wanted alive!</strong> Snordin Orangestone A.K.A. "Grody" Snordin.<br>
+        Traveling merchant peddling sets of cursed sewing needles. 
+        <span class="reward">REWARD: 40gp</span>
+        <span class="description">↳ Description: frequently drunken male dwarf, average height, chubby, with beard.</span>
+    </div>
+
+    <div class="notice">
+        <strong>Wanted dead or alive!</strong> Gerta of Garmro A.K.A. "The Dish Breaking Bandit!" 
+        <span class="reward">REWARD: 30gp</span>
+        <span class="description">↳ Description: Male Catfolk, tuxedo coat, average height, chubby, with cross-eyed eyes.</span>
+    </div>
+
+    <div class="notice">
+        Port Nyanzaru priesthood of Gond is paying <strong>20gp a vial</strong> for water collected from the Lake Luo to treat a spreading fever.
+    </div>
+
+    <div class="notice">
+        <strong>Help wanted!</strong> Giant mutated rats in tavern cellar! Inquire at 41 Belmont Drive
+    </div>
+
+    <div class="notice">
+        <strong>Dire Rat Catcher!</strong> 3 silver pieces for each rat corpse brought in! Inquire at 43 Belmont Drive
+    </div>
+
+    <div class="notice">
+        Merchant seeks caravan master, cartographer, navigator, and experienced caravan guards for trade expedition to Hrakhamar. <span class="reward">Reward is <em>gold pieces</em>.</span> Contact Harrol Wudd.
+    </div>
+
+    <div class="notice">
+        Require an instructor learned in morbid obesity research to tutor my child. Opportunity to earn a title. Contact Jamic Colter in Port Nyanzaru for more details.
+    </div>
+
+    <div class="notice">
+        <strong>Bodyguards Needed for one night!</strong> Job pays gold! <span class="reward">Reward is a priceless heirloom.</span> Contact Kazimir for more details.
+    </div>
+
+    <div class="notice">
+        <strong>Construction workers needed.</strong> Hard labor, good pay. Special bonuses for magic users. Come to Redspine and report to construction site office.
+    </div>
+
+    <div class="notice">
+        <strong>Turtle census!</strong> Dragovian Geographic Society paying GOLD for accurate counting of the turtles! Inquire with the society for more details.
+    </div>
+
+    <div class="notice">
+        <strong>LOST Blink Dog!</strong> <span class="reward">10 gp Reward</span> for return of Lucy! Contact Rulf if found!
+    </div>
+
+</div>
+
+</body>
+</html>
