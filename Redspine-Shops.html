@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redspine Market Directory</title>
+<style>
+    body {
+        background-color: #f4ecd8; /* Parchment base */
+        color: #2b1704;
+        font-family: 'Book Antiqua', Palatino, serif;
+        font-size: 13px;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 22px;
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid #2b1704;
+        padding-bottom: 5px;
+    }
+    .masonry {
+        column-count: 3;
+        column-gap: 20px;
+    }
+    .shop {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid #c9bca0;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+        margin: 0 0 8px 0;
+        font-size: 15px;
+        color: #5c1818;
+        border-bottom: 1px solid #5c1818;
+        padding-bottom: 3px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 4px 2px;
+        vertical-align: top;
+        border-bottom: 1px solid #e0d5ba;
+    }
+    th {
+        text-align: left;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #5c1818;
+    }
+    td:nth-child(1) {
+        width: 25%;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Name column */
+    }
+    td:nth-child(2) {
+        width: 60%;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+    td:nth-child(3) {
+        width: 15%;
+        text-align: right;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Price column */
+    }
+    /* Tavern specific styling (only 2 columns) */
+    .tavern th:nth-child(2) { text-align: right; }
+    .tavern td:nth-child(1) { width: 70%; white-space: normal; }
+    .tavern td:nth-child(2) { 
+        width: 30%; 
+        font-size: 11px;
+        text-align: right; 
+        font-weight: bold; 
+        white-space: nowrap; 
+    }
+</style>
+</head>
+<body>
+
+<h1>Redspine Market Directory</h1>
+
+<div class="masonry">
+    
+    <!-- GENERAL PROVISIONS -->
+    <div class="shop">
+        <h2>General Provisions</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Dried Rations, 2 lbs</td><td>Standard travel food. Slightly fresher here than in the deep jungle.</td><td>4 sp</td></tr>
+            <tr><td>Rations, Chult, 1 lbs</td><td>Dragovar clay-paste. Fed to prisoners by the ton, so it's cheaper here.</td><td>15 cp</td></tr>
+            <tr><td>Water, 1 gal</td><td>Drinkable water.</td><td>2 cp</td></tr>
+            <tr><td>Rain Catcher</td><td>Tarp/frame basin. Catches 2 gal/inch of rain, holds 8 gal.</td><td>20 sp</td></tr>
+            <tr><td>Logging Saw (Two-man)</td><td>A massive, flexible saw. Requires two people to use efficiently.</td><td>5 gp</td></tr>
+            <tr><td>Handaxe</td><td>Simple melee weapon, 1d6 slashing. Used for chopping kindling and limbs.</td><td>4 gp</td></tr>
+            <tr><td>Hemp Rope, 50 ft</td><td>Thick, industrial-grade rope used for hauling timber.</td><td>18 sp</td></tr>
+            <tr><td>Block and Tackle</td><td>Allows you to hoist up to four times the weight you can normally lift.</td><td>17 sp</td></tr>
+            <tr><td>Miner's Pick</td><td>Used for breaking rock/roots. Can be used as a 1d8 piercing weapon.</td><td>2 gp</td></tr>
+            <tr><td>Lantern, Bullseye</td><td>Burns Oil. Bright Light 60-ft Cone, Dim Light 60-ft.</td><td>8 gp</td></tr>
+            <tr><td>Oil, 1 flask</td><td>Standard lantern fuel.</td><td>8 cp</td></tr>
+            <tr><td>Draft Horse</td><td>A sturdy, scarred workhorse accustomed to hauling timber.</td><td>115 gp</td></tr>
+            <tr><td>Cargo Cart</td><td>A heavy wooden cart. Pulled by a draft horse or several prisoners.</td><td>45 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- GLINT'S SMITHY -->
+    <div class="shop">
+        <h2>Glint's Smithy</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Saw</td><td>A simple one-hand saw</td><td>3 sp</td></tr>
+            <tr><td>Sawblade</td><td>A large circular saw blade used for splitting thick trunks</td><td>15 gp</td></tr>
+            <tr><td>Heavy Manacles</td><td>Iron restraints. DC 20 Str to break, DC 20 Sleight of Hand to pick. Includes key.</td><td>2 gp</td></tr>
+            <tr><td>Iron Chain, 10 ft</td><td>Has 10 hit points. Can be burst with a DC 20 Strength check.</td><td>5 gp</td></tr>
+            <tr><td>Iron Spikes (10)</td><td>Useful for climbing or wedging doors shut.</td><td>1 gp</td></tr>
+            <tr><td>Crowbar</td><td>Advantage on Strength checks where leverage applies.</td><td>15 sp</td></tr>
+            <tr><td>Mending Kit</td><td>Whetstone, metal files, rivets. Restores degraded weapon/armor over a Short Rest.</td><td>4 gp</td></tr>
+            <tr><td>Boar Trap</td><td>Triggered by stepping on it. 1d4 piercing damage and DC 13 Str save or restrained.</td><td>8 gp</td></tr>
+            <tr><td>Slave-Brand (Custom)</td><td>The smith will forge a custom branding iron of any shape or insignia.</td><td>5 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- DRAGOVAR ARMORY -->
+    <div class="shop">
+        <h2>Dragovar Armory</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Dragovar Machete</td><td>Scimitar/Shortsword. Ignores first point of damage reduction from thick foliage/wood.</td><td>15 gp</td></tr>
+            <tr><td>Imperial Halberd</td><td>1d10 slashing, heavy, reach, two-handed.</td><td>20 gp</td></tr>
+            <tr><td>Heavy Crossbow</td><td>1d10 piercing, heavy, loading, two-handed.</td><td>50 gp</td></tr>
+            <tr><td>Crossbow Bolts (20)</td><td>Stamped with the Imperial seal.</td><td>1 gp</td></tr>
+            <tr><td>Overseer's Whip</td><td>Finesse, reach. 1d4 slashing. Advantage on Intimidation checks vs prisoners.</td><td>2 gp</td></tr>
+            <tr><td>Leather Armor</td><td>Simple boiled leather. AC 11 + Dex modifier. Standard jungle protection.</td><td>15 gp</td></tr>
+            <tr><td>Studded Leather Armor</td><td>Tough boiled leather with steel rivets. AC 12 + Dex modifier.</td><td>45 gp</td></tr>
+            <tr><td>Hide Armor</td><td>Thick, layered animal hide. AC 12 + Dex modifier (Max 2).</td><td>20 gp</td></tr>
+            <tr><td>Chain Mail</td><td>AC 16. Disadvantage on Stealth. Speed -10 if Str is below 13.</td><td>95 gp</td></tr>
+            <tr><td>Wooden Shield</td><td>AC +2. Standard Dragovar infantry issue.</td><td>25 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- HEARTWOOD JOINERY -->
+    <div class="shop">
+        <h2>Heartwood Joinery</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Redwood Shield</td><td>AC +2. Made of sturdy jungle timber. Excellent Design</td><td>30 gp</td></tr>
+            <tr><td>Wooden Staff</td><td>Simple Weapon, Spell Focus, 1d6 Bludgeoning, Versatile (1d8) Mastery: Topple</td><td>5 gp</td></tr>
+            <tr><td>10-Foot Pole</td><td>Standard adventuring gear. Excellent for checking pits and traps.</td><td>5 cp</td></tr>
+            <tr><td>Wooden Stakes (10)</td><td>Sharpened ends, ideal for setting up camp perimeters or fighting vampires.</td><td>1 gp</td></tr>
+            <tr><td>Finely Carved Idol</td><td>A wooden carving of the Radiant Monarch or local spirits. Good for trade or bribes.</td><td>5 gp</td></tr>
+            <tr><td>Hollowed Log Canoe</td><td>Holds up to 4 Medium creatures. Slower than a rowboat, but incredibly durable.</td><td>45 gp</td></tr>
+            <tr><td>Woodcarver's Tools</td><td>Carve a pattern in wood (DC 10), Craft: Wooden items.</td><td>8 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- CANVAS & CORD -->
+    <div class="shop">
+        <h2>Canvas & Cord (Textiles)</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Workman's Boots</td><td>Heavy, steel-toed leather boots. Ignore difficult terrain from thorns/jagged rocks.</td><td>10&nbsp;gp</td></tr>
+            <tr><td>Mosquito Netting</td><td>Drape over bedroll/tent. Immunity to normal insect bites while sleeping.</td><td>3 gp</td></tr>
+            <tr><td>Canvas Tarpaulin (10x10)</td><td>Heavy, waterproof treated canvas. Excellent for makeshift shelters.</td><td>2 gp</td></tr>
+            <tr><td>Jungle Hammock</td><td>Keeps the sleeper suspended off the damp, parasite-ridden ground.</td><td>15 sp</td></tr>
+            <tr><td>Traveler's Clothes</td><td>Sturdy wool and canvas, designed to withstand mud and rain.</td><td>2 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- TEMPLE OF THE RADIANT MONARCH -->
+    <div class="shop">
+        <h2>Temple of the Radiant Monarch</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Holy Water</td><td>Ranged attack (20 ft). Fiends/Undead take 2d8 Radiant damage on failed Dex save.</td><td>25&nbsp;gp</td></tr>
+            <tr><td>Sustaining the Flesh</td><td>Equivalent to 1st level Cure Wounds (2d8+3).</td><td>20 gp</td></tr>
+            <tr><td>Cleansing the Shadow</td><td>Equivalent to Lesser Restoration (cures blindness, deafness, paralysis, diseases).</td><td>45 gp</td></tr>
+            <tr><td>Sacrament of Embers</td><td>Lux Vial: Grants +1 to two Ability Scores for 1 hr. Grants "Lux Strike". Wear off: DC 15 Con save or 1 Exhaustion + Disadv on Wis saves until Long Rest.</td><td>15 gp</td></tr>
+            <tr><td>Blessing of Caladrath</td><td>+1d4 bonus to the first saving throw made in the next 72 hours.</td><td>5 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- MAGIC SHOP -->
+    <div class="shop">
+        <h2>The Veiled Stump (Magic Shop)</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td><a href="https://5e.tools/items.html#belt%20of%20hill%20giant%20strength_xdmg" target="_blank">Potion of Giant Strength</a></td><td>Sets Strength to 21 for 1 hour. Highly prized by logging crews.</td><td>150 gp</td></tr>
+            <tr><td><a href="https://5e.tools/items.html#spell%20scroll%20(cantrip)_xdmg" target="_blank">Scroll of Mending</a></td><td>Instantly repairs a snapped chain, saw blade, or broken wagon wheel.</td><td>25 gp</td></tr>
+            <tr><td><a href="https://5e.tools/items.html#dust%20of%20dryness_xdmg" target="_blank">Dust of Dryness</a></td><td>Absorbs up to 100 gallons of water. Essential for surviving sudden flash floods.</td><td>120 gp</td></tr>
+            <tr><td>Salve of the Ironwood</td><td>When applied to skin, acts as the Barkskin spell (AC 16) for 1 hour.</td><td>80 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- TAVERNS -->
+    <div class="shop tavern">
+        <h2>The Red Oak Tavern</h2>
+        <table>
+            <tr><th>Item</th><th>Price</th></tr>
+            <tr><td>Beer (1 pint)</td><td>3 cp</td></tr>
+            <tr><td>Amberwine (1 pint)</td><td>1 sp</td></tr>
+            <tr><td>Amberwine (5 gal barrel)</td><td>4 gp</td></tr>
+            <tr><td>Lodging (1 day)</td><td>1 sp</td></tr>
+            <tr><td>Lodging (1 week)</td><td>5 sp</td></tr>
+            <tr><td>Peasant's meal</td><td>4 cp</td></tr>
+        </table>
+    </div>
+
+    <div class="shop tavern">
+        <h2>Cedar & Smoke Tavern</h2>
+        <table>
+            <tr><th>Item</th><th>Price</th></tr>
+            <tr><td>Beer (1 pint)</td><td>6 cp</td></tr>
+            <tr><td>Wine (1 pint)</td><td>12 cp</td></tr>
+            <tr><td>Amberwine (1 pint)</td><td>3 sp</td></tr>
+            <tr><td>Amberwine (5 gal barrel)</td><td>8 gp</td></tr>
+            <tr><td>Lodging (1 day)</td><td>5 sp</td></tr>
+            <tr><td>Lodging (1 week)</td><td>3 gp</td></tr>
+            <tr><td>Peasant's meal</td><td>8 cp</td></tr>
+            <tr><td>Rich Meal</td><td>2 gp</td></tr>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
