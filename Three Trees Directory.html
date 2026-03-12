@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three-Trees Market Directory</title>
+<style>
+    body {
+        background-color: #f4ecd8; /* Parchment base */
+        color: #2b1704;
+        font-family: 'Book Antiqua', Palatino, serif;
+        font-size: 13px;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 22px;
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid #2b1704;
+        padding-bottom: 5px;
+    }
+    .masonry {
+        column-count: 3;
+        column-gap: 20px;
+    }
+    .shop {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid #c9bca0;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+        margin: 0 0 8px 0;
+        font-size: 15px;
+        color: #5c1818;
+        border-bottom: 1px solid #5c1818;
+        padding-bottom: 3px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 4px 2px;
+        vertical-align: top;
+        border-bottom: 1px solid #e0d5ba;
+    }
+    th {
+        text-align: left;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #5c1818;
+    }
+    td:nth-child(1) {
+        width: 25%;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Name column */
+    }
+    td:nth-child(2) {
+        width: 60%;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+    td:nth-child(3) {
+        width: 15%;
+        text-align: right;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Price column */
+    }
+    /* Tavern specific styling (only 2 columns) */
+    .tavern th:nth-child(2) { text-align: right; }
+    .tavern td:nth-child(1) { width: 70%; white-space: normal; }
+    .tavern td:nth-child(2) { 
+        width: 30%; 
+        font-size: 11px;
+        text-align: right; 
+        font-weight: bold; 
+        white-space: nowrap; 
+    }
+</style>
+</head>
+<body>
+
+<h1>Three-Trees Market Directory</h1>
+
+<div class="masonry">
+    
+    <!-- GENERAL STORE -->
+    <div class="shop">
+        <h2>General Store</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Dried Rations, 2 lbs</td><td>Travel-ready food (jerky, dried fruit, hardtack, nuts).</td><td>5 sp</td></tr>
+            <tr><td>Rations, Chult, 1 lbs</td><td> Clay-like paste that keeps good indefinitely. Mostly a chewing exercise, but is extremley nutritious: one pound of paste counts as two pounds of food.</td><td>25 cp</td></tr>
+            <tr><td>Water, 1 gal</td><td>Drinkable water, a rarity on Zul.</td><td>3 cp</td></tr>
+            <tr><td>Waterskin, 1 gal</td><td>Holds 1 gallon of liquid. Costs 5cp if empty.</td><td>8 cp</td></tr>
+            <tr><td>Large Waterskin, 15 gal</td><td>Holds 15 gallons of liquid. Costs 35 cp if empty.</td><td>50 cp</td></tr>
+            <tr><td>Rain Catcher</td><td>Tarp/frame basin. Catches 2 gal/inch of rain, holds 8 gal.</td><td>25 sp</td></tr>
+            <tr><td>Insect Repellent (salve)</td><td>20 uses of waterproof grease. Protects 24 hrs.</td><td>16 sp</td></tr>
+            <tr><td>Insect Repellent (incense)</td><td>Burns 8 hours, repels insects in 20-ft radius.</td><td>15 cp</td></tr>
+            <tr><td>Canoe</td><td>Holds up to 6 Medium creatures. Max speed 2 mph.</td><td>55 gp</td></tr>
+            <tr><td>Small Tent</td><td>Packs up easily. Fits 2 medium sized creatures.</td><td>1 gp</td></tr>
+            <tr><td>Large Tent</td><td>Fits up to 15 medium sized creatures.</td><td>3 pp</td></tr>
+            <tr><td>Rain Cloak</td><td>Keeps a creature dry during a rainstorm.</td><td>6 sp</td></tr>
+            <tr><td>Torch</td><td>Sheds light in a 30 ft radius.</td><td>1 cp</td></tr>
+            <tr><td>Grappling hook</td><td>Throw at a catch (DC 13 Acrobatics). Can be climbed with rope.</td><td>18 sp</td></tr>
+            <tr><td>Tinderbox</td><td>Lights fuel (Bonus Action) or starts fire (1 minute).</td><td>5 sp</td></tr>
+            <tr><td>Arrows, 20x</td><td>Recover half expended ammo by searching battlefield.</td><td>10 sp</td></tr>
+            <tr><td>Crossbow Bolts, 20x</td><td>Recover half expended ammo by searching battlefield.</td><td>10 sp</td></tr>
+            <tr><td>Backpack</td><td>Holds 30 lbs within 1 cubic foot. Can be a saddlebag.</td><td>2 gp</td></tr>
+            <tr><td>Bedroll</td><td>Sleeps 1 creature. Auto-succeed saves against extreme cold.</td><td>9 sp</td></tr>
+            <tr><td>Chest</td><td>Holds up to 12 cubic feet of contents.</td><td>5 gp</td></tr>
+            <tr><td>Carpenter's Tools</td><td>Seal/pry open doors (DC 20), Craft wooden items.</td><td>80 sp</td></tr>
+            <tr><td>Brewer's Supplies</td><td>Detect poisoned drink (DC 15), identify alcohol (DC 10).</td><td>20 gp</td></tr>
+            <tr><td>Cartographer's Tools</td><td>Draft a map of a small area (DC 15).</td><td>15 gp</td></tr>
+            <tr><td>Cook's Utensils</td><td>Improve flavor (DC 10), detect spoiled food (DC 15).</td><td>10 sp</td></tr>
+            <tr><td>Navigator's Tools</td><td>Plot a course (DC 10), determine position by stars (DC 15).</td><td>25 gp</td></tr>
+            <tr><td>Thieves' Tools</td><td>Pick a lock (DC 15), disarm a trap (DC 15).</td><td>20 gp</td></tr>
+            <tr><td>Tinker's Tools</td><td>Assemble Tiny scrap items (DC 20).</td><td>50 gp</td></tr>
+            <tr><td>Climber's Kit</td><td>Anchor yourself to prevent falling more than 25 feet.</td><td>25 gp</td></tr>
+            <tr><td>Disguise Kit</td><td>Apply makeup (DC 10), Craft Costume.</td><td>25 gp</td></tr>
+            <tr><td>Healer's Kit</td><td>10 uses. Stabilize 0 HP creature without Medicine check.</td><td>50 sp</td></tr>
+            <tr><td>Herbalism Kit</td><td>Identify a plant (DC 10), Craft Antitoxin/Potions.</td><td>50 sp</td></tr>
+            <tr><td>Burglar's Pack</td><td>Backpack, Ball Bearings, Bell, Candles, Crowbar, Lantern, Oil, Rations, Rope.</td><td>16 gp</td></tr>
+            <tr><td>Diplomat's Pack</td><td>Chest, Fine Clothes, Ink, Map Cases, Paper, Perfume.</td><td>40 gp</td></tr>
+            <tr><td>Dungeoneer's Pack</td><td>Backpack, Caltrops, Crowbar, 10 Torches, Rations, Rope.</td><td>12 gp</td></tr>
+            <tr><td>Entertainer's Pack</td><td>Backpack, Bedroll, Lantern, 3 Costumes, Mirror, Rations.</td><td>40 gp</td></tr>
+            <tr><td>Explorer's Pack</td><td>Backpack, Bedroll, 10 Torches, Rations, Rope, Tinderbox.</td><td>10 gp</td></tr>
+            <tr><td>Priest's Pack</td><td>Backpack, Blanket, Holy Water, Lamp, Robe, Rations.</td><td>33 gp</td></tr>
+            <tr><td>Scholar's Pack</td><td>Backpack, Book, Ink/Pen, Lamp, Parchment, Tinderbox.</td><td>40 gp</td></tr>
+            <tr><td>Clothes, Fine</td><td>Expensive fabrics for exclusive events.</td><td>85 sp</td></tr>
+            <tr><td>Ink, 1 oz</td><td>Enough ink to write about 500 pages.</td><td>10 gp</td></tr>
+            <tr><td>Bullseye Lantern</td><td>Burns Oil. Bright Light 60-ft Cone, Dim Light 60-ft.</td><td>100 sp</td></tr>
+            <tr><td>Hooded Lantern</td><td>Burns Oil. Bright Light 30-ft radius. Lower hood for 5-ft Dim.</td><td>50 sp</td></tr>
+            <tr><td>Rope, hempen (50 ft)</td><td>Tie knot (DC 10 Sleight of Hand). Burst with DC 20 Athletics.</td><td>25 sp</td></tr>
+            <tr><td>Crowbar</td><td>Advantage on Strength checks where leverage applies.</td><td>2 gp</td></tr>
+            <tr><td>Map of Zul</td><td>Shows Dragovian settlements.</td><td>25 gp</td></tr>
+            <tr><td>Dagger</td><td>1d4 Piercing, Finesse, Light, Thrown (20/60).</td><td>2 gp</td></tr>
+            <tr><td>Shortsword</td><td>1d6 Piercing, Finesse, Light.</td><td>10 gp</td></tr>
+            <tr><td>Yklwa</td><td>1d8 piercing, Thrown (10/30). Traditional Zultan blade.</td><td>1 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- DRAGOVAR REQUISITIONS -->
+    <div class="shop">
+        <h2>Dragovar Requisitions</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Machete</td><td>Scimitar/Shortsword. Ignores first point of reduction from foliage/wood.</td><td>20 gp</td></tr>
+            <tr><td>Imperial Halberd</td><td>1d10 slashing, heavy, reach, two-handed.</td><td>25 gp</td></tr>
+            <tr><td>Spear</td><td>1d6 Piercing, Thrown (20/60 ft.), Versatile (1d8).</td><td>5 gp</td></tr>
+            <tr><td>Light Crossbow</td><td>1d8 piercing, loading, two-handed. Resists jungle humidity.</td><td>32 gp</td></tr>
+            <tr><td>Heavy Crossbow</td><td>1d10 piercing, (Range 80/320), heavy, loading.</td><td>65 gp</td></tr>
+            <tr><td>Crossbow Bolts (20)</td><td>Stamped with the Imperial seal.</td><td>2 gp</td></tr>
+            <tr><td>Silvered Upgrade</td><td>Silvers 1 melee weapon or 10 ammo. Takes 1 hour.</td><td>150 gp</td></tr>
+            <tr><td>Studded Leather</td><td>Tough boiled leather with steel rivets. AC 12 + Dex.</td><td>60 gp</td></tr>
+            <tr><td>Dragovar Breastplate</td><td>Protection that doesn't cook the wearer. AC 14 + Dex (max 2).</td><td>500 gp</td></tr>
+            <tr><td>Half-Plate Armor</td><td>AC 15 + Dex (max 2). Disadv. on Stealth. Heavy and hot.</td><td>950 gp</td></tr>
+            <tr><td>Infantry Kit</td><td>Rucksack, mess kit, 10 days hardtack, 2-gal waterskin, 50ft rope.</td><td>25 gp</td></tr>
+            <tr><td>Anti-Rust Paste</td><td>Protects non-magical metal from rusting in jungle for 7 days.</td><td>5 gp</td></tr>
+            <tr><td>Spyglass</td><td>Imperial military-grade lenses. Magnifies 2x.</td><td>1,200 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- APOTHECARY -->
+    <div class="shop">
+        <h2>Three-Trees Apothecary</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Potion of Healing</td><td>Drink/administer to regain 2d4 + 2 HP.</td><td>50 gp</td></tr>
+            <tr><td>Potion of Climbing</td><td>Gain Climb Speed for 1 hour. Advantage on Athletics to climb.</td><td>20 gp</td></tr>
+            <tr><td>Potion of Poison Res.</td><td>Resistance to Poison damage for 1 hour.</td><td>60 gp</td></tr>
+            <tr><td>Antitoxin</td><td>Advantage on saves vs Poisoned condition for 1 hour.</td><td>50 gp</td></tr>
+            <tr><td>Wildroot</td><td>Rub juice on open wound to rid creature of poisoned condition.</td><td>25 gp</td></tr>
+            <tr><td>Ryath Root</td><td>Ingest for 2d4 temp HP. Over 1/day requires DC 13 Con save.</td><td>50 gp</td></tr>
+            <tr><td>Menga leaves, 1 oz</td><td>Regain 1 HP. Over 5oz/day requires DC 11 Con save.</td><td>2 gp</td></tr>
+            <tr><td>Palebark, 3 strips</td><td>Chewing grants Adv. on Con saves vs diseases for 24 hours.</td><td>50 sp</td></tr>
+            <tr><td>Pilgrim's Salve</td><td>Massage into muscles over Short Rest to recover 1 Exhaustion.</td><td>40 gp</td></tr>
+            <tr><td>Alchemical Purifier</td><td>One drop purifies 1 gallon of swamp water. 10 drops per vial.</td><td>10 gp</td></tr>
+            <tr><td>Blood-Clot Powder</td><td>Pour over dying creature to stabilize, or stop bleeding.</td><td>10 gp</td></tr>
+            <tr><td>Corpse Paste</td><td>Mindless undead need DC 12 Wis save to notice you for 1 hr.</td><td>25 gp</td></tr>
+            <tr><td>Dream Sap</td><td>Grants 2d4+4 Temp HP, suppresses 1 level of Exhaustion for 4 hrs.</td><td>15 gp</td></tr>
+            <tr><td>Potion of Animal Friend</td><td>Cast level 3 Animal Friendship (DC 13).</td><td>17 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- CHURCH OF RADIANT MONARCH -->
+    <div class="shop">
+        <h2>Church of the Radiant Monarch</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Holy Water</td><td>Ranged attack. Fiends/Undead take 2d8 Radiant on failed Dex save.</td><td>25 gp</td></tr>
+            <tr><td>Sustaining the Flesh</td><td>Equivalent to 1st level Cure Wounds (2d8+3).</td><td>20 gp</td></tr>
+            <tr><td>Advanced Care</td><td>Equivalent to 2nd level Cure Wounds (4d8+3).</td><td>45 gp</td></tr>
+            <tr><td>Critical Care</td><td>Equivalent to 3rd level Cure Wounds (6d8+3).</td><td>10 pp</td></tr>
+            <tr><td>Cleansing the Shadow</td><td>Equivalent to Lesser Restoration (cures blindness, diseases).</td><td>50 gp</td></tr>
+            <tr><td>Anointing of the Dawn</td><td>Equivalent to Aid spell (5 max HP for 72 hours).</td><td>20 gp</td></tr>
+            <tr><td>Blessing of Caladrath</td><td>+1d4 bonus to the first saving throw made in the next 72 hours.</td><td>5 gp</td></tr>
+            <tr><td>Sacrament of Embers</td><td>Lux Vial: Grants +1 to two Ability Scores for 1 hr. Grants "Lux Strike".</td><td>15 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- CHURCH OF SILVANUS -->
+    <div class="shop">
+        <h2>Church of Silvanus</h2>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Goodberry Bundle</td><td>5 berries. Restores 1 HP and counts as a day of food. Rots in 24 hr.</td><td>10 gp</td></tr>
+            <tr><td>Holy Water</td><td>Ranged attack (20 ft). Fiends/Undead take 2d8 Radiant on failed Dex save.</td><td>27 gp</td></tr>
+            <tr><td>Leaf Reading</td><td>Equivalent to Augury spell for a course of action in the next 8 hours.</td><td>12 gp</td></tr>
+            <tr><td>Camouflage Paint</td><td>Takes 1 min to apply. Advantage on Stealth in jungle for 8 hours.</td><td>15 gp</td></tr>
+            <tr><td>Commune with Nature</td><td>Up to 5 characters gain advantage on Survival checks for next 3 days.</td><td>50 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- TAVERNS -->
+    <div class="shop tavern">
+        <h2>Broken Keel Tavern</h2>
+        <table>
+            <tr><th>Item</th><th>Price</th></tr>
+            <tr><td>Beer, 1 pint</td><td>5 cp</td></tr>
+            <tr><td>Wine, 1 pint</td><td>9 cp</td></tr>
+            <tr><td>Amberwine, 1 pint</td><td>2 sp</td></tr>
+            <tr><td>Amberwine, 5 gal barrel</td><td>6 gp</td></tr>
+            <tr><td>Brandy, 1 pint</td><td>13 sp</td></tr>
+            <tr><td>Lodging, 1 day</td><td>2 sp</td></tr>
+            <tr><td>Lodging, 1 week</td><td>1 gp</td></tr>
+            <tr><td>Peasant's meal</td><td>7 cp</td></tr>
+            <tr><td>Merchant's meal</td><td>2 sp</td></tr>
+            <tr><td>Rich Meal</td><td>1 gp</td></tr>
+            <tr><td>Banquet</td><td>15 gp</td></tr>
+            <tr><td>Grain, Horse Meal</td><td>3 cp</td></tr>
+        </table>
+    </div>
+
+    <div class="shop tavern">
+        <h2>The Talisman Tavern</h2>
+        <table>
+            <tr><th>Item</th><th>Price</th></tr>
+            <tr><td>Beer, 1 pint</td><td>4 cp</td></tr>
+            <tr><td>Wine, 1 pint</td><td>10 cp</td></tr>
+            <tr><td>Amberwine, 1 pint</td><td>2 sp</td></tr>
+            <tr><td>Amberwine, 5 gal barrel</td><td>6 gp</td></tr>
+            <tr><td>Brandy, 1 pint</td><td>11 sp</td></tr>
+            <tr><td>Lodging, 1 day</td><td>15 cp</td></tr>
+            <tr><td>Lodging, 1 week</td><td>1 gp</td></tr>
+            <tr><td>Peasant's meal</td><td>6 cp</td></tr>
+            <tr><td>Merchant's meal</td><td>3 sp</td></tr>
+            <tr><td>Rich Meal</td><td>3 gp</td></tr>
+            <tr><td>Grain, Horse Meal</td><td>3 cp</td></tr>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
