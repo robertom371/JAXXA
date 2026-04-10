@@ -111,6 +111,116 @@
         font-size: 15px;
         letter-spacing: 0.5px;
     }
+    .imperial-notice {
+    break-inside: avoid;
+    margin-bottom: 30px;
+    background: #e8dcc4; /* Cleaner, official paper */
+    border: 3px double #2b1c11;
+    padding: 20px 18px 15px 18px;
+    box-shadow: 4px 5px 12px rgba(0,0,0,0.8);
+    position: relative;
+    line-height: 1.5;
+    color: #1a110a;
+    font-family: 'Georgia', serif;
+    transform: rotate(-0.5deg);
+}
+.imperial-notice::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: #2b1c11;
+    border-radius: 50%;
+    box-shadow: 2px 2px 3px rgba(0,0,0,0.8), inset -2px -2px 4px #5c1818;
+}
+.imperial-notice .header {
+    text-align: center;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    border-bottom: 2px solid #2b1c11;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+.imperial-notice .title {
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    margin: 8px 0;
+}
+.imperial-notice .resident {
+    margin: 10px 0;
+    font-size: 13px;
+}
+.imperial-notice .ledger {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    margin: 10px 0;
+    padding: 8px 0;
+    border-top: 1px dashed #5c4326;
+    border-bottom: 1px dashed #5c4326;
+}
+.imperial-notice .ledger .line {
+    display: flex;
+    justify-content: space-between;
+}
+.imperial-notice .total {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px solid #2b1c11;
+}
+.imperial-notice .body {
+    font-size: 11px;
+    font-style: italic;
+    margin: 10px 0;
+    line-height: 1.4;
+}
+.imperial-notice .bounty {
+    background: #7a1b1b;
+    color: #e8dcc4;
+    padding: 6px 8px;
+    margin: 10px 0;
+    text-align: center;
+    font-family: 'Arial Black', Impact, sans-serif;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+.imperial-notice .signature {
+    text-align: right;
+    font-size: 11px;
+    font-style: italic;
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px solid #5c4326;
+}
+.imperial-notice .seal {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #7a1b1b;
+    border-radius: 50%;
+    color: #7a1b1b;
+    font-family: 'Georgia', serif;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.1;
+    padding-top: 8px;
+    margin-left: 10px;
+    transform: rotate(-15deg);
+    vertical-align: middle;
+    box-sizing: border-box;
+}
 </style>
 </head>
 <body>
@@ -118,7 +228,49 @@
 <h1>Three Trees Job Board</h1>
 
 <div class="board">
+    <div class="imperial-notice">
+    <div class="header">⚜ Imperial Notice ⚜</div>
+    <div class="title">By Order of the Office of the Imperial Assessor</div>
+    <div class="title">Province of Zuul · Settlement: Three Trees</div>
+    <div class="title" style="font-size:11px; font-weight:normal; font-style:italic;">Filed under the authority of Assessor Rhesk, Appointed Collector</div>
 
+    <div class="title" style="margin-top:14px; border-top:1px solid #2b1c11; padding-top:10px;">Public Notice of Outstanding Obligation</div>
+
+    <div class="resident">
+        <strong>Resident:</strong> Ossian Farr<br>
+        <strong>Registered Address:</strong> South River Row, Plot 7
+    </div>
+
+    <div class="body">
+        Be it known that the following assessment remains <strong>UNPAID</strong> as of the date of this filing: Garyx 12th, 814 DY.
+    </div>
+
+    <div class="ledger">
+        <div class="line"><span>Habitation Levy</span><span>21 sp</span></div>
+        <div class="line"><span>Frontier Provisions Requisition</span><span>37 gp</span></div>
+        <div class="line"><span>Imperial Road Maintenance Levy</span><span>34 sp</span></div>
+        <div class="line"><span>Private Creditor Debt</span><span>38 gp</span></div>
+        <div class="line total"><span>Total Due</span><span>805 sp</span></div>
+    </div>
+
+    <div class="body">
+        Failure to remit payment within thirty (30) days of this notice shall result in referral to the Office of the Imperial Assessor for collection proceedings under Imperial Statute 14-3(c), including but not limited to: seizure of property, garnishment of wages and trade income, or assignment of labor detail.
+    </div>
+
+    <div class="body">
+        <strong>Notice of Default:</strong> Under Imperial Statute 14-4(b), if restitution is not rendered within thirty (30) days of publication of this notice, the Debtor is subject to immediate physical asset recovery.
+    </div>
+
+    <div class="bounty">Collection Bounty: 22% of Outstanding Principal · Debtor to be Delivered Alive</div>
+
+    <div class="signature">
+        Signed,<br>
+        <em>Assessor Rhesk</em><br>
+        Zarenshar 9th, 814 DY
+        <span class="seal">IMP<br>SEAL</span>
+    </div>
+        
+</div>
     <div class="notice">
         <strong>Help wanted!</strong> Chicken turns neon green when in moonlight. Inquire at the Vance home.
     </div>
