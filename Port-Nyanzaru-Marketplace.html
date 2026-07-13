@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Port Nyanzaru Grand Market Directory</title>
+<style>
+    body {
+        background-color: #f4ecd8; /* Parchment base */
+        color: #2b1704;
+        font-family: 'Book Antiqua', Palatino, serif;
+        font-size: 13px;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        font-size: 22px;
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid #2b1704;
+        padding-bottom: 5px;
+    }
+    .subtitle {
+        text-align: center;
+        font-style: italic;
+        font-size: 12px;
+        margin: 0 0 15px 0;
+        color: #5c4a2e;
+    }
+    .masonry {
+        column-count: 3;
+        column-gap: 20px;
+    }
+    .shop {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid #c9bca0;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    .wide {
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid #c9bca0;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+        margin: 0 0 8px 0;
+        font-size: 15px;
+        color: #5c1818;
+        border-bottom: 1px solid #5c1818;
+        padding-bottom: 3px;
+    }
+    .ward {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #7a5c2e;
+        margin: -6px 0 6px 0;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 4px 2px;
+        vertical-align: top;
+        border-bottom: 1px solid #e0d5ba;
+    }
+    th {
+        text-align: left;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #5c1818;
+    }
+    td:nth-child(1) {
+        width: 25%;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Name column */
+    }
+    td:nth-child(2) {
+        width: 60%;
+        font-size: 14px;
+        line-height: 1.2;
+    }
+    td:nth-child(3) {
+        width: 15%;
+        text-align: right;
+        font-weight: bold;
+        white-space: nowrap; /* Locks Price column */
+    }
+    /* Comparison tables (taverns, passage) override the 3-column lock */
+    .grid td:nth-child(n) {
+        width: auto;
+        font-weight: normal;
+        white-space: normal;
+        text-align: left;
+        font-size: 12px;
+    }
+    .grid td:nth-child(1) {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .grid td.p {
+        text-align: right;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    .fineprint {
+        font-size: 11px;
+        font-style: italic;
+        color: #5c4a2e;
+        margin: 6px 0 0 0;
+    }
+</style>
+</head>
+<body>
+
+<h1>Port Nyanzaru Grand Market Directory</h1>
+<p class="subtitle">Seven monopolies, one law: you buy from the consortium, or you don't buy. All prices in consortium coin. Goods land here first; upriver pays the freight.</p>
+
+<!-- TAVERNS COMPARISON -->
+<div class="wide">
+    <h2>Taverns &amp; Lodging of the Port</h2>
+    <table class="grid">
+        <tr><th>House</th><th>Ward</th><th>Room / Night</th><th>Room / Week</th><th>Meal</th><th>Ale (pint)</th><th>Amberwine (pint)</th><th>Character</th></tr>
+        <tr><td>Kaya's House of Repose</td><td>Market</td><td class="p">8 sp</td><td class="p">4 gp</td><td class="p">3 sp</td><td class="p">5 cp</td><td class="p">3 sp</td><td>Quiet, clean, locked doors, a good night's sleep guaranteed by the house.</td></tr>
+        <tr><td>The Thundering Lizard</td><td>Market</td><td class="p">3 sp</td><td class="p">15 sp</td><td class="p">1 sp</td><td class="p">3 cp</td><td class="p">25 cp</td><td>Loud, packed, gambling in the back, music till the last bell. Sleep is not the product.</td></tr>
+        <tr><td>The Long Berth</td><td>Harbor</td><td class="p">2 sp</td><td class="p">12 sp</td><td class="p">8 cp</td><td class="p">4 cp</td><td class="p">25 cp</td><td>Breakfast included. Honest scales, no questions asked (many noticed).</td></tr>
+        <tr><td>The Spliced Eye</td><td>Harbor</td><td class="p">15 cp</td><td class="p">8 sp</td><td class="p">6 cp</td><td class="p">3 cp</td><td class="p">3 sp</td><td>A drinking house with four rooms over it. Sailors' custom. Mind whose table you approach.</td></tr>
+        <tr><td>The Crooked Grin</td><td>Malar's Throat</td><td class="p">8 cp</td><td class="p">4 sp</td><td class="p">3 cp</td><td class="p">2 cp</td><td class="p">&mdash;</td><td>Cheap, dim, and honest about neither. Count your fingers after handshakes.</td></tr>
+        <tr><td>Devcka's Den of Earthly Comforts</td><td>Malar's Throat</td><td class="p">6 sp</td><td class="p">&mdash;</td><td class="p">2 sp</td><td class="p">6 cp</td><td class="p">4 sp</td><td>Rooms also by the hour (2 sp). Comforts priced at the door.</td></tr>
+        <tr><td>Anchorage flop-sheds</td><td>Tyriki Anchorage</td><td class="p">5 cp</td><td class="p">3 sp</td><td class="p">&mdash;</td><td class="p">2 cp</td><td class="p">&mdash;</td><td>A roof, a mat, and everyone else who paid five coppers. Sleep in your boots.</td></tr>
+    </table>
+    <p class="fineprint">Amberwine is brewed 90 miles upriver in Three Trees and pays the freight coming down; expect it a quarter dearer here than at its source, and rising.</p>
+</div>
+
+<div class="masonry">
+
+    <!-- GENERAL PROVISIONS -->
+    <div class="shop">
+        <h2>General Provisions</h2>
+        <div class="ward">Consortium counters &middot; Market Ward</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Dried Rations, 2 lbs</td><td>Travel food, fresher and cheaper than anywhere upriver. It lands here first.</td><td>3 sp</td></tr>
+            <tr><td>Rations, Chult, 1 lbs</td><td>Dragovar clay-paste, shipped in by the ton from Ghor Dranas. One pound counts as two pounds of food.</td><td>12 cp</td></tr>
+            <tr><td>Water, 1 gal</td><td>City cistern water, boiled and sold. Drinkable, which on Zuul is a boast.</td><td>2 cp</td></tr>
+            <tr><td>Waterskin, 1 gal</td><td>Holds 1 gallon. Costs 4 cp empty.</td><td>7 cp</td></tr>
+            <tr><td>Large Waterskin, 15 gal</td><td>Holds 15 gallons. Costs 30 cp empty.</td><td>45 cp</td></tr>
+            <tr><td>Rain Catcher</td><td>Tarp/frame basin. Catches 2 gal/inch of rain, holds 8 gal.</td><td>20 sp</td></tr>
+            <tr><td>Insect Repellent (salve)</td><td>20 uses of waterproof grease. Protects 24 hrs.</td><td>12 sp</td></tr>
+            <tr><td>Insect Repellent (incense)</td><td>Burns 8 hours, repels insects in 20-ft radius.</td><td>12 cp</td></tr>
+            <tr><td>Torch</td><td>Sheds light in a 30 ft radius.</td><td>1 cp</td></tr>
+            <tr><td>Lamp Oil, 1 pint</td><td>Kwayoth&eacute;'s cellars. Burns 6 hours in a lantern.</td><td>8 cp</td></tr>
+            <tr><td>Tinderbox</td><td>Lights fuel (Bonus Action) or starts a fire (1 minute).</td><td>4 sp</td></tr>
+            <tr><td>Backpack</td><td>Holds 30 lbs within 1 cubic foot. Can be a saddlebag.</td><td>18 sp</td></tr>
+            <tr><td>Bedroll</td><td>Sleeps 1 creature.</td><td>8 sp</td></tr>
+            <tr><td>Rope, hempen, 50 ft</td><td>From Casker's chandlery, Harbor Ward. The good lay.</td><td>8 sp</td></tr>
+            <tr><td>Grappling hook</td><td>Throw at a catch (DC 13 Acrobatics). Can be climbed with rope.</td><td>15 sp</td></tr>
+            <tr><td>Chest</td><td>Holds up to 12 cubic feet of contents.</td><td>4 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- EXPEDITION OUTFITTING -->
+    <div class="shop">
+        <h2>Expedition Outfitting</h2>
+        <div class="ward">Ekene-Afa's Yard &middot; Market Ward</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Jungle Hammock</td><td>Keeps the sleeper off the damp, parasite-ridden ground.</td><td>12 sp</td></tr>
+            <tr><td>Mosquito Netting</td><td>Drape over bedroll/tent. Immunity to normal insect bites while sleeping.</td><td>25 sp</td></tr>
+            <tr><td>Canvas Tarpaulin (10x10)</td><td>Heavy waterproof treated canvas. Excellent for makeshift shelters.</td><td>18 sp</td></tr>
+            <tr><td>Small Tent</td><td>Packs up easily. Fits 2 medium creatures.</td><td>9 sp</td></tr>
+            <tr><td>Large Tent</td><td>Fits up to 15 medium creatures.</td><td>25 gp</td></tr>
+            <tr><td>Rain Cloak</td><td>Keeps a creature dry during a rainstorm.</td><td>5 sp</td></tr>
+            <tr><td>Traveler's Clothes</td><td>Sturdy wool and canvas, built for mud and rain.</td><td>18 sp</td></tr>
+            <tr><td>Machete</td><td>Counts as a sickle. Cutting trail without one costs double time.</td><td>8 sp</td></tr>
+            <tr><td>Climber's Kit</td><td>Pitons, boot tips, gloved harness. Anchor as an action.</td><td>20 gp</td></tr>
+            <tr><td>Two-Man Saw, Shovel, Pry Bar</td><td>Camp iron, each.</td><td>2 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- ARMS AND ARMOR -->
+    <div class="shop">
+        <h2>Arms &amp; Armor</h2>
+        <div class="ward">Ekene-Afa's Yard &middot; Market Ward</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Spear / Yklwa</td><td>The Zultan yklwa: 1d8 versatile, short haft, thrown (10/30).</td><td>9 sp</td></tr>
+            <tr><td>Longsword</td><td>Dragovar pattern, arsenal grade.</td><td>14 gp</td></tr>
+            <tr><td>Shortbow</td><td>With waxed string for the wet.</td><td>22 gp</td></tr>
+            <tr><td>Arrows / Bolts, 20x</td><td>Recover half expended ammo by searching the field.</td><td>9 sp</td></tr>
+            <tr><td>Shield</td><td>Hide-faced or steel-rimmed, buyer's pick.</td><td>9 gp</td></tr>
+            <tr><td>Leather Armor</td><td>Oiled against rot. The jungle eats the cheap stuff.</td><td>9 gp</td></tr>
+            <tr><td>Chain Shirt</td><td>Arsenal grade, sized while you wait.</td><td>45 gp</td></tr>
+            <tr><td>Breastplate</td><td>Dragovar naval pattern.</td><td>380 gp</td></tr>
+            <tr><td>Arena-Grade Weapon</td><td>Any weapon above, show-etched and balanced. No mechanical difference. Looks magnificent.</td><td>+50%</td></tr>
+        </table>
+    </div>
+
+    <!-- TALRO'A PURCHASE -->
+    <div class="shop">
+        <h2>Talro'a's Pens &mdash; Purchase</h2>
+        <div class="ward">Tyriki Anchorage &middot; downwind of everything</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Mule</td><td>Carries 420 lbs. Complains the entire time.</td><td>7 gp</td></tr>
+            <tr><td>Draft Lizard</td><td>Ox-sized, placid, immune to the diseases that kill oxen here.</td><td>20 gp</td></tr>
+            <tr><td>Hunting Lizard</td><td>Dog-sized, keen nose, leash-trained.</td><td>5 gp</td></tr>
+            <tr><td>Flying Monkey</td><td>Charming. Steals. Sold as-is.</td><td>10 gp</td></tr>
+            <tr><td>Dimetrodon</td><td>Swims, guards a camp, eats anything.</td><td>25 gp</td></tr>
+            <tr><td>Deinonychus (saddle-broken)</td><td>Fast, vicious, papers included, questions not.</td><td>75 gp</td></tr>
+            <tr><td>Hadrosaurus</td><td>Riding or pack. Carries 1,000 lbs at a walk.</td><td>60 gp</td></tr>
+            <tr><td>Ankylosaurus (draft)</td><td>Pulls what a team of eight can't. Handler included for the first tenday.</td><td>450 gp</td></tr>
+            <tr><td>"The Grandfather"</td><td>Antique. Genuine. Very old. A history, not a pet.</td><td>Inquire</td></tr>
+        </table>
+    </div>
+
+    <!-- TALRO'A RENTAL -->
+    <div class="shop">
+        <h2>Talro'a's Pens &mdash; Rental</h2>
+        <div class="ward">Day rate + deposit &middot; deposit forfeit if not returned</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Mule</td><td>Deposit 5 gp.</td><td>2 sp/day</td></tr>
+            <tr><td>Draft Lizard</td><td>Deposit 15 gp.</td><td>5 sp/day</td></tr>
+            <tr><td>Hadrosaurus</td><td>Deposit 40 gp.</td><td>1 gp/day</td></tr>
+            <tr><td>Ankylosaurus w/ handler</td><td>Deposit 100 gp. Handler's meals on the renter.</td><td>3 gp/day</td></tr>
+            <tr><td>Deinonychus</td><td>Not rented. "They come back hungry, or they don't come back."</td><td>&mdash;</td></tr>
+        </table>
+    </div>
+
+    <!-- CARTS AND WATERCRAFT -->
+    <div class="shop">
+        <h2>Carts &amp; Watercraft</h2>
+        <div class="ward">Consortium yards &middot; Tyriki Anchorage</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Handcart</td><td>One person pushes 200 lbs.</td><td>8 gp</td></tr>
+            <tr><td>Cart</td><td>Two wheels, one beast.</td><td>12 gp</td></tr>
+            <tr><td>Wagon</td><td>Four wheels, two beasts, jungle roads permitting (they rarely permit).</td><td>30 gp</td></tr>
+            <tr><td>Canoe</td><td>Holds up to 6 Medium creatures. Max speed 2 mph.</td><td>45 gp</td></tr>
+            <tr><td>Keelboat (charter, crewed)</td><td>Upriver freight by arrangement at the Anchorage.</td><td>5 gp/day</td></tr>
+        </table>
+    </div>
+
+    <!-- GUIDE HALL -->
+    <div class="shop">
+        <h2>Jorbal's Guide Hall</h2>
+        <div class="ward">Hiring porch, Tyriki Anchorage &middot; all guides licensed &amp; tithed by law</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Guide, settled corridors</td><td>Rivers, roads, the logging cuts.</td><td>5 gp/day</td></tr>
+            <tr><td>Guide, deep interior</td><td>Past the maps. Fewer names on this list every season.</td><td>10 gp/day</td></tr>
+            <tr><td>Toxal</td><td>Retired adventurer, newest license on the board. Takes almost nothing. Worth everything. Ask at the Long Berth.</td><td>10 gp/day</td></tr>
+            <tr><td>Map, settled corridors</td><td>Confidently wrong past the rivers.</td><td>5&ndash;25 gp</td></tr>
+            <tr><td>Route intelligence (sold TO the hall)</td><td>Verified corrections to the hall's sheets, paid on inspection.</td><td>5&ndash;20 gp</td></tr>
+        </table>
+    </div>
+
+    <!-- HOUSE OF GREEN -->
+    <div class="shop">
+        <h2>Jessamine's House of Green</h2>
+        <div class="ward">Merchants' Ward edge &middot; nobody hurries here</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Healer's Kit</td><td>10 uses. Stabilize a 0 HP creature without a Medicine check.</td><td>4 gp</td></tr>
+            <tr><td>Antitoxin</td><td>Advantage vs. poison for 1 hour.</td><td>45 gp</td></tr>
+            <tr><td>Palebark, 3 strips</td><td>Chewing grants Adv. on Con saves vs. disease for 24 hours.</td><td>4 gp</td></tr>
+            <tr><td>Wound Salve</td><td>Applied with a short rest: +2 HP per Hit Die spent.</td><td>2 gp</td></tr>
+            <tr><td>Basic Poison, 1 vial</td><td>License required. Fee doubles without one. Ask at the quiet door.</td><td>100 gp</td></tr>
+            <tr><td>Sanction Inquiry</td><td>Referred upward. Bring patience and a very good reason.</td><td>&mdash;</td></tr>
+        </table>
+    </div>
+
+    <!-- ARCANA -->
+    <div class="shop">
+        <h2>Wakanga O'tamu &mdash; Arcana &amp; Lore</h2>
+        <div class="ward">Stalls throughout the Souk &middot; main counter at the fountain &middot; coin, gems, or jewelry only</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Potion of Healing</td><td>2d4+2 HP. The only legal magic trade on the island.</td><td>50 gp</td></tr>
+            <tr><td>Identification</td><td>Bring the item, leave it a day.</td><td>20 gp</td></tr>
+            <tr><td>Lore Consultation</td><td>Per question. First question free, if it is interesting.</td><td>5 gp</td></tr>
+            <tr><td>Scrolls &amp; Wares</td><td>Full inventory posted at the fountain counter.</td><td>See posting</td></tr>
+        </table>
+    </div>
+
+    <!-- VAULT ROW -->
+    <div class="shop">
+        <h2>Zhanthi's Vault Row</h2>
+        <div class="ward">Merchants' Ward &middot; guarded like it looks</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Appraisal</td><td>While you watch, with commentary.</td><td>5 sp</td></tr>
+            <tr><td>Loot Purchase</td><td>Best rate in the city: three-quarters of appraised value, paid in coin or gems.</td><td>75% value</td></tr>
+            <tr><td>Gem Exchange</td><td>Coin to gems or back, at par.</td><td>2% fee</td></tr>
+            <tr><td>Fine Cloth &amp; Jewelry</td><td>For when you need to be asked your business only once in the Merchants' Ward.</td><td>10 gp+</td></tr>
+        </table>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="shop">
+        <h2>Services &amp; Sundries</h2>
+        <div class="ward">Everywhere &middot; mostly honest</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Rickshaw</td><td>Anywhere in the city. Three coppers uphill, and it is always uphill.</td><td>2 cp</td></tr>
+            <tr><td>Letter, written</td><td>Per page, at any letter stall. Discretion, 1 sp extra.</td><td>1 cp</td></tr>
+            <tr><td>Bathhouse</td><td>Hot water, cold water, and an hour of not being on Zuul.</td><td>5 cp</td></tr>
+            <tr><td>Laundry</td><td>Per load. Jungle rot laughed at, then defeated.</td><td>3 cp</td></tr>
+            <tr><td>Porter</td><td>Per load, quay to anywhere in the ward.</td><td>5 cp</td></tr>
+            <tr><td>Moneychanger</td><td>Any coin to consortium coin.</td><td>2% fee</td></tr>
+            <tr><td>Barber-Surgeon</td><td>Shave 2 cp. Tooth pulled 5 cp. Stitches 1 sp, thread included.</td><td>varies</td></tr>
+            <tr><td>Ferry to Fort Belurian</td><td>Half a day, inshore. Charter-of-exploration business goes this way.</td><td>8 sp</td></tr>
+        </table>
+    </div>
+
+    <!-- FOOD BY WARD -->
+    <div class="shop">
+        <h2>Eating by Ward</h2>
+        <div class="ward">Street to silver</div>
+        <table>
+            <tr><th>Name</th><th>Description</th><th>Price</th></tr>
+            <tr><td>Skewers, coal-box</td><td>Tyriki Anchorage. Meat of the day, day not specified.</td><td>3 cp</td></tr>
+            <tr><td>Souk Bowl</td><td>Market Ward. Rice, greens, river fish, fire optional but assumed.</td><td>5 cp</td></tr>
+            <tr><td>Fried River Eel</td><td>Harbor Ward. Comes on a stick, leaves with regrets.</td><td>4 cp</td></tr>
+            <tr><td>Teahouse Plate</td><td>Old City. Quiet, small, exactly enough.</td><td>1 sp</td></tr>
+            <tr><td>Merchants' Ward Caf&eacute;</td><td>Excellent. Comes with a look.</td><td>5 sp</td></tr>
+        </table>
+    </div>
+
+</div>
+
+<!-- PASSAGE BOARD -->
+<div class="wide">
+    <h2>The Passage Board</h2>
+    <div class="ward">Beside the harbor office &middot; berth-broker's fee 1 sp over the master's fare &middot; all fares ALL-IN, per head</div>
+    <table class="grid">
+        <tr><th>Passage</th><th>Fare</th><th>Sailing</th><th>Notes</th></tr>
+        <tr><td>Bay ferry: Fort Belurian</td><td class="p">8 sp</td><td>Daily</td><td>Half a day, inshore. No offering.</td></tr>
+        <tr><td>Coastal: Refuge Bay</td><td class="p">7 gp</td><td>Most tendays</td><td>3&ndash;4 days. The Mudlark and hulls like her. Passes snake water.</td></tr>
+        <tr><td>Eastern isles: Rizenmaw, Kr&ucirc;lfang, Serrain</td><td class="p">30 gp</td><td>Irregular</td><td>Nearest true off-island landfalls.</td></tr>
+        <tr><td>Eastern isles: Darkfire, Irizvian</td><td class="p">45 gp</td><td>Irregular</td><td>Deep-water hulls only.</td></tr>
+        <tr><td>Off-island: the baronies &amp; beyond</td><td class="p">175&ndash;425 gp</td><td>Convoy only</td><td>Steerage. Cabin triple. The convoy list is months deep.</td></tr>
+        <tr><td>Charter, whole hull</td><td class="p">2,000&ndash;5,000 gp</td><td>By the master's nerve</td><td>Bring your own courage.</td></tr>
+    </table>
+    <p class="fineprint">Every fare includes what goes over the side at the mouth of the bay, made in one offering, all together; no master itemizes it and none will discuss it. What goes over depends on what's aboard: masters look passengers over on the quay, and heavy magic reprices a berth on the spot, or closes it. Cheaper ways off the island are said to sail from Refuge Bay, and what waits past the Bay instead of the deep water is a matter of some discussion among men who fly no flags.</p>
+</div>
+
+</body>
+</html>
