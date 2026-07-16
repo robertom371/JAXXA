@@ -106,7 +106,7 @@
         font-weight: bold;
         white-space: nowrap;
     }
-    .grid td.p {
+    .grid td.p, .grid th.p {
         text-align: right;
         font-weight: bold;
         white-space: nowrap;
@@ -114,7 +114,8 @@
     .grid th {
         text-align: center;
     }
-    .grid th:first-child {
+    .grid th:first-child,
+    .grid td:nth-child(1) {
         text-align: left;
     }
     .grid th:last-child,
@@ -138,7 +139,7 @@
 <div class="wide">
     <h2>Taverns &amp; Lodging of the Port City</h2>
     <table class="grid">
-        <tr><th>House</th><th>Ward</th><th>Room / Night</th><th>Room / Week</th><th>Meal</th><th>Ale (pint)</th><th>Amberwine (pint)</th><th>Character</th></tr>
+        <tr><th>House</th><th>Ward</th><th class="p">Room / Night</th><th class="p">Room / Week</th><th class="p">Meal</th><th class="p">Ale (pint)</th><th class="p">Amberwine (pint)</th><th>Character</th></tr>
         <tr><td>Kaya's House of Repose</td><td>Market</td><td class="p">8 sp</td><td class="p">4 gp</td><td class="p">3 sp</td><td class="p">5 cp</td><td class="p">35 cp</td><td>Well let, clean, quiet, & good locks, a good night's sleep all but guaranteed. </td></tr>
         <tr><td>The Thundering Lizard</td><td>Market</td><td class="p">3 sp</td><td class="p">15 sp</td><td class="p">1 sp</td><td class="p">3 cp</td><td class="p">31 cp</td><td>Popular local hangout, gambling den in the back, live music till last bell.</td></tr>
         <tr><td>The Long Berth</td><td>Harbor</td><td class="p">25 cp</td><td class="p">13 sp</td><td class="p">8 cp</td><td class="p">4 cp</td><td class="p">35 cp</td><td>Breakfast included. Honest scales read true. Short walk from the wharf. </td></tr>
