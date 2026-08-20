@@ -204,8 +204,8 @@ const COLD = 6 * 60 * 60 * 1000;   /* a visit older than this is over */
 const BLANK = {
   field:'low', mode:'field', rod:true, from:'low', seen:false, ts:0,
   L:{ clicks:0, dead:0, count:null, history:[], queue:[], kind:null,
-      forced:false, armed:null, pending:false, override:false },
-  H:{ clicks:0, count:null, history:[], queue:[], armed:null },
+      forced:false, armed:null, pending:false, override:false, seed:0.5 },
+  H:{ clicks:0, count:null, history:[], queue:[], armed:null, seed:0.5 },
   cfg:Object.assign({}, DL), hcfg:Object.assign({}, DH)
 };
 
@@ -636,42 +636,216 @@ const el = (n,a) => { const e = document.createElementNS(NS,n);
                       for (const k in a) e.setAttribute(k,a[k]); return e; };
 function clear(){ while (room.firstChild) room.removeChild(room.firstChild); }
 
+/* Layout jitter is SEEDED PER ROOM, not rolled per render. A repaint has
+   to reproduce the room exactly. Otherwise the doors twitch whenever
+   anything redraws, including the moment the console arms something,
+   and that is a tell of the worst possible kind.                     */
+function seeded(v){
+  let t = (v * 4294967296) | 0;
+  return function(){
+    t = (t + 0x6D2B79F5) | 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 const GRIT = `
    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" seed="7"/>
      <feColorMatrix type="saturate" values="0"/>
-     <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+     <feComponentTransfer><feFuncA type="linear" slope="0.24"/></feComponentTransfer>
      <feComposite in2="SourceGraphic" operator="in"/></filter>
    <filter id="blot"><feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="3"/>
      <feColorMatrix type="saturate" values="0"/>
-     <feComponentTransfer><feFuncA type="linear" slope="0.24"/></feComponentTransfer>
+     <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+     <feComposite in2="SourceGraphic" operator="in"/></filter>
+   <filter id="rockA" x="-4%" y="-4%" width="108%" height="108%">
+     <feTurbulence type="fractalNoise" baseFrequency="0.016" numOctaves="5" seed="17"/>
+     <feColorMatrix type="saturate" values="0"/>
+     <feComponentTransfer>
+       <feFuncR type="table" tableValues="0.10 0.62"/>
+       <feFuncG type="table" tableValues="0.10 0.62"/>
+       <feFuncB type="table" tableValues="0.09 0.60"/>
+       <feFuncA type="table" tableValues="1 1"/></feComponentTransfer>
+     <feComposite in2="SourceGraphic" operator="in"/></filter>
+   <filter id="rockB" x="-4%" y="-4%" width="108%" height="108%">
+     <feTurbulence type="fractalNoise" baseFrequency="0.075" numOctaves="4" seed="41"/>
+     <feColorMatrix type="saturate" values="0"/>
+     <feComponentTransfer>
+       <feFuncR type="table" tableValues="0.14 0.70"/>
+       <feFuncG type="table" tableValues="0.14 0.70"/>
+       <feFuncB type="table" tableValues="0.14 0.68"/>
+       <feFuncA type="table" tableValues="1 1"/></feComponentTransfer>
      <feComposite in2="SourceGraphic" operator="in"/></filter>
    <radialGradient id="dark" cx="0.5" cy="0.15" r="1">
-     <stop offset="0" stop-color="#131316"/><stop offset="1" stop-color="#040405"/></radialGradient>`;
+     <stop offset="0" stop-color="#131316"/><stop offset="1" stop-color="#040405"/></radialGradient>
+   <linearGradient id="jamb" x1="0" y1="0" x2="0" y2="1">
+     <stop offset="0" stop-color="#83837a"/><stop offset="1" stop-color="#474741"/></linearGradient>`;
 
+function tex(d, filt, op){
+  room.appendChild(el('path',{ d:d, fill:'#888', filter:'url(#'+filt+')',
+                               opacity:op, 'pointer-events':'none' }));
+}
 function grime(){
   room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#fff',
-                              filter:'url(#grain)',opacity:0.42,'pointer-events':'none'}));
+                              filter:'url(#grain)',opacity:0.30,'pointer-events':'none'}));
   room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#000',
-                              filter:'url(#blot)',opacity:0.5,'pointer-events':'none'}));
+                              filter:'url(#blot)',opacity:0.40,'pointer-events':'none'}));
+}
+
+/* ---- cobbles ----
+   Real geometry, not noise. Noise can make a surface look dirty; it can
+   never make it look laid. Cells are built on a shared vertex grid so
+   the mortar between two stones is one gap rather than two, some pairs
+   are merged into longer stones, and the whole floor is drawn from a
+   FIXED seed so it does not reshuffle between rooms.               */
+
+function grey(v){ v = Math.max(0, Math.min(255, Math.round(v)));
+                  return 'rgb(' + v + ',' + v + ',' + v + ')'; }
+
+/* One slab. No outline: the groove is the bed showing through a small
+   inset, which is what keeps the contrast low. Rounded corners and a
+   heavy stroke were what made the last floor shout.               */
+function slab(pts, gap, fill){
+  let cx = 0, cy = 0;
+  pts.forEach(p => { cx += p[0]; cy += p[1]; });
+  cx /= pts.length; cy /= pts.length;
+  const q = pts.map(p => {
+    const dx = cx - p[0], dy = cy - p[1], d = Math.hypot(dx,dy) || 1;
+    const k = Math.min(gap, d*0.4);
+    return (p[0] + dx/d*k).toFixed(1) + ' ' + (p[1] + dy/d*k).toFixed(1);
+  });
+  room.appendChild(el('path',{ d:'M' + q.join(' L ') + ' Z', fill:fill,
+                               'pointer-events':'none' }));
+}
+
+/* Basketweave. Pairs of slabs alternate orientation block by block,
+   laid on a perspective grid: rows compress toward the back, so the
+   recession comes from the geometry and not from a stretched filter.
+   ROWS, COLS and PROG are the scale. Set FLOOR to 'flat' for nothing
+   but the gradient.                                                */
+const FLOOR = 'flat';
+const ROWS = 12, COLS = 16, PROG = 1.30;
+
+function pave(){
+  const {bx1,bx2,by2,fy} = BOX;
+  const R = seeded(0.7391);
+
+  const ys = [];
+  for (let k = 0; k <= ROWS; k++)
+    ys.push(by2 + (fy-by2) * ((Math.pow(PROG,k)-1) / (Math.pow(PROG,ROWS)-1)));
+
+  const V = [];
+  for (let k = 0; k <= ROWS; k++){
+    const y = ys[k], f = (y - by2) / (fy - by2);
+    const xL = bx1 + f*(0 - bx1), xR = bx2 + f*(1000 - bx2);
+    const row = [];
+    for (let c = 0; c <= COLS; c++) row.push([ xL + c*(xR-xL)/COLS, y ]);
+    V.push(row);
+  }
+
+  const put = (k0,k1,c0,c1) => {
+    const depth = ((k0+k1)/2) / ROWS;
+    slab([ V[k0][c0], V[k0][c1], V[k1][c1], V[k1][c0] ],
+         0.5 + 1.3*depth, grey((54 + 32*depth) * (0.95 + 0.10*R())));
+  };
+
+  for (let k = 0; k < ROWS; k += 2)
+    for (let c = 0; c < COLS; c += 2){
+      const k1 = k+2, c1 = c+2;
+      if (((k/2) + (c/2)) % 2 === 0){ put(k, k+1, c, c1); put(k+1, k1, c, c1); }
+      else                          { put(k, k1, c, c+1); put(k, k1, c+1, c1); }
+    }
+}
+
+/* The ring room gets the same restraint, laid radially. */
+function paveDisc(){
+  const R = seeded(0.5127);
+  const RINGS = 8;
+  const pt = (rr,a) => [CX + RX*rr*Math.cos(a), CY + RY*rr*Math.sin(a)];
+  for (let j = 0; j < RINGS; j++){
+    const r0 = j/RINGS, r1 = (j+1)/RINGS;
+    const seg = Math.max(8, Math.round(8 + j*5));
+    const spin = j * 0.37;
+    for (let i = 0; i < seg; i++){
+      const a0 = spin + (i/seg)*Math.PI*2, a1 = spin + ((i+1)/seg)*Math.PI*2;
+      const q  = [ pt(r0,a0), pt(r0,a1), pt(r1,a1), pt(r1,a0) ];
+      const cy = (q[0][1]+q[1][1]+q[2][1]+q[3][1]) / 4;
+      const depth = Math.max(0, Math.min(1, (cy - (CY-RY)) / (2*RY)));
+      slab(q, 0.5 + 1.2*depth, grey((52 + 30*depth) * (0.95 + 0.10*R())));
+    }
+  }
+}
+
+/* ---- the doorway ---- */
+
+/* Closed: the leaf and the stone surround. Open: just the arch, used
+   for the hover outline so it traces the doorway rather than boxing
+   it like something pasted on.                                      */
+function arch(x, yb, w, h, close){
+  const yt = yb - h, r = w * 0.42;
+  return `M ${x} ${yb} L ${x} ${yt+r} Q ${x} ${yt} ${x+w/2} ${yt}`
+       + ` Q ${x+w} ${yt} ${x+w} ${yt+r} L ${x+w} ${yb}` + (close ? ' Z' : '');
+}
+
+function doorway(x, yb, w, h, fill, tag){
+  const t = Math.max(5, w * 0.12);
+  const g = el('g',{class:'door'});
+  if (tag) g.setAttribute('data-choice', tag);
+
+  const outer = arch(x - t, yb, w + 2*t, h + t*0.9, true);
+  g.appendChild(el('path',{ d:outer, fill:'url(#jamb)' }));
+  g.appendChild(el('path',{ d:outer, fill:'#888', filter:'url(#rockA)',
+                            opacity:0.30, 'pointer-events':'none' }));
+  g.appendChild(el('path',{ d:outer, fill:'none', stroke:'#232320',
+                            'stroke-width':1.4, opacity:0.75 }));
+
+  g.appendChild(el('path',{ class:'leaf', d:arch(x, yb, w, h, true), fill:fill }));
+  g.appendChild(el('path',{ d:arch(x, yb, w, h, false), fill:'none',
+                            stroke:'#1d1d1a', 'stroke-width':2.2, opacity:0.9 }));
+
+  g.appendChild(el('path',{ class:'rim', d:arch(x-t-4, yb, w+2*t+8, h+t*0.9+4, false),
+                            fill:'none', stroke:'#cfcabb', 'stroke-width':2.4, opacity:0 }));
+  return g;
 }
 
 /* ---- lower field: a perspective box ---- */
 
-const BOX = { bx1:250, bx2:750, by1:170, by2:360, fy:620 };
+/* Back wall pulled forward again and widened to match. The doors are
+   the only thing on screen anyone can act on, so they get to be big. */
+const BOX = { bx1:95, bx2:905, by1:127, by2:460, fy:620 };
+
+/* Every door is the same size. Spacing is hand set per room count so
+   each count reads as its own picture rather than as a formula.
+   Index of GAPS is the door count. SLIDE is a horizontal wander for
+   the whole row, in units. Zero is dead still.                     */
+const MARGIN = 21;
+const DOORH  = 212;   /* set outright, not derived from width: the wall
+                         got taller and the doors go with it, without
+                         getting any wider.                          */
+const DOORW  = 92;    /* reference width, and what a six door room gets */
+
+/* Width and gap are BOTH set per room count. Only the six door room is
+   actually constrained by the wall; every other count has space going
+   spare, so a two door room gets wider doors rather than the same
+   narrow ones with more air between them. Index is the door count. */
+const WIDTHS = [0, 116, 112, 108, 102,  96, 92];
+const GAPS   = [0,   0, 276, 168, 104,  65, 37];
+const SLIDE  = 0;
 
 function defsLow(){
   const d = el('defs',{});
   d.innerHTML = GRIT + `
    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
-     <stop offset="0" stop-color="#6e6e67"/><stop offset="1" stop-color="#4a4a45"/></linearGradient>
+     <stop offset="0" stop-color="#34342e"/><stop offset="1" stop-color="#212120"/></linearGradient>
    <linearGradient id="left" x1="0" y1="0" x2="1" y2="0">
-     <stop offset="0" stop-color="#33332f"/><stop offset="1" stop-color="#5c5c56"/></linearGradient>
+     <stop offset="0" stop-color="#57574f"/><stop offset="1" stop-color="#33332e"/></linearGradient>
    <linearGradient id="right" x1="0" y1="0" x2="1" y2="0">
-     <stop offset="0" stop-color="#5c5c56"/><stop offset="1" stop-color="#33332f"/></linearGradient>
-   <linearGradient id="floorL" x1="0" y1="0" x2="0" y2="1">
-     <stop offset="0" stop-color="#4f4f49"/><stop offset="1" stop-color="#1e1e1c"/></linearGradient>
+     <stop offset="0" stop-color="#33332e"/><stop offset="1" stop-color="#57574f"/></linearGradient>
    <linearGradient id="ceil" x1="0" y1="0" x2="0" y2="1">
-     <stop offset="0" stop-color="#1a1a19"/><stop offset="1" stop-color="#3d3d39"/></linearGradient>
+     <stop offset="0" stop-color="#3c3c36"/><stop offset="1" stop-color="#2c2c27"/></linearGradient>
+   <linearGradient id="floorL" x1="0" y1="0" x2="0" y2="1">
+     <stop offset="0" stop-color="#232320"/><stop offset="1" stop-color="#34342f"/></linearGradient>
    <radialGradient id="pale" cx="0.5" cy="0.15" r="1">
      <stop offset="0" stop-color="#f6f3e9"/><stop offset="1" stop-color="#c2bcaa"/></radialGradient>`;
   return d;
@@ -679,117 +853,108 @@ function defsLow(){
 
 function shellLow(){
   const {bx1,bx2,by1,by2,fy} = BOX;
-  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#131312'}));
-  room.appendChild(el('path',{d:`M0,0 L1000,0 L${bx2},${by1} L${bx1},${by1} Z`,fill:'url(#ceil)'}));
-  room.appendChild(el('path',{d:`M0,0 L${bx1},${by1} L${bx1},${by2} L0,${fy} Z`,fill:'url(#left)'}));
-  room.appendChild(el('path',{d:`M1000,0 L${bx2},${by1} L${bx2},${by2} L1000,${fy} Z`,fill:'url(#right)'}));
-  room.appendChild(el('path',{d:`M0,${fy} L${bx1},${by2} L${bx2},${by2} L1000,${fy} Z`,fill:'url(#floorL)'}));
-  room.appendChild(el('rect',{x:bx1,y:by1,width:bx2-bx1,height:by2-by1,fill:'url(#back)'}));
-  /* Coursing on the back wall only. Side walls stay plain so the eye
-     reads depth rather than pattern.                              */
-  for (let y = by1 + 26; y < by2; y += 26)
-    room.appendChild(el('line',{x1:bx1,y1:y,x2:bx2,y2:y,stroke:'#38382f','stroke-width':1.4,opacity:0.5}));
-  for (let x = bx1 + 58; x < bx2; x += 58)
-    room.appendChild(el('line',{x1:x,y1:by1,x2:x,y2:by2,stroke:'#38382f','stroke-width':1.4,opacity:0.35}));
-  for (let i = 0; i <= 10; i++){
-    const t = i/10;
-    room.appendChild(el('line',{x1:t*1000,y1:fy,x2:BOX.bx1+t*(bx2-bx1),y2:by2,
-                                stroke:'#2a2a27','stroke-width':1.2,opacity:0.35}));
-  }
-}
+  const ceil  = `M0,0 L1000,0 L${bx2},${by1} L${bx1},${by1} Z`;
+  const left  = `M0,0 L${bx1},${by1} L${bx1},${by2} L0,${fy} Z`;
+  const right = `M1000,0 L${bx2},${by1} L${bx2},${by2} L1000,${fy} Z`;
+  const floor = `M0,${fy} L${bx1},${by2} L${bx2},${by2} L1000,${fy} Z`;
+  const back  = `M${bx1},${by1} L${bx2},${by1} L${bx2},${by2} L${bx1},${by2} Z`;
 
-function doorBox(x, w, h, fill, tag){
-  const yb = BOX.by2, yt = yb - h;
-  const g = el('g',{class:'door'});
-  if (tag) g.setAttribute('data-choice', tag);
-  g.appendChild(el('rect',{class:'rim',x:x-4,y:yt-4,width:w+8,height:h+8,
-                           fill:'none',stroke:'#cfcabb','stroke-width':2,opacity:0}));
-  g.appendChild(el('path',{class:'leaf',
-    d:`M ${x} ${yb} L ${x} ${yt+w*0.42}
-       Q ${x} ${yt} ${x+w/2} ${yt}
-       Q ${x+w} ${yt} ${x+w} ${yt+w*0.42}
-       L ${x+w} ${yb} Z`, fill:fill}));
-  g.appendChild(el('path',{d:`M ${x} ${yb} L ${x} ${yt+w*0.42} Q ${x} ${yt} ${x+w/2} ${yt}`,
-                           fill:'none',stroke:'#8b8b82','stroke-width':1.6,opacity:0.45}));
-  return g;
+  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
+  room.appendChild(el('path',{d:ceil, fill:'url(#ceil)'}));
+  room.appendChild(el('path',{d:left, fill:'url(#left)'}));
+  room.appendChild(el('path',{d:right,fill:'url(#right)'}));
+  room.appendChild(el('path',{d:floor,fill:'url(#floorL)'}));   /* the bed */
+  room.appendChild(el('path',{d:back, fill:'url(#back)'}));
+
+  tex(back,  'rockA', 0.36);  tex(back,  'rockB', 0.14);
+  tex(left,  'rockA', 0.20);  tex(right, 'rockA', 0.20);
+  tex(ceil,  'rockA', 0.14);
+
+  if (FLOOR === 'pavers') pave();
+  tex(floor, 'rockA', 0.15);
+
+  room.appendChild(el('path',{d:`M${bx1},${by2} L${bx2},${by2}`, fill:'none',
+                              stroke:'#191916','stroke-width':1.8,opacity:0.5}));
 }
 
 function renderLow(n){
   clear(); room.appendChild(defsLow()); shellLow();
-  const span = BOX.bx2 - BOX.bx1 - 24, gap = 9;
-  const w = Math.max(16, Math.min(58, (span - (n-1)*gap) / n));
-  const h = Math.min(BOX.by2 - BOX.by1 - 14, w * 2.1);
-  let x = (1000 - (n*w + (n-1)*gap)) / 2;
-  for (let i = 0; i < n; i++){ room.appendChild(doorBox(x, w, h, 'url(#dark)')); x += w + gap; }
+  const SPAN = (BOX.bx2 - BOX.bx1) - MARGIN*2;
+
+  let w   = (WIDTHS[n] !== undefined) ? WIDTHS[n] : DOORW;
+  let gap = (GAPS[n]   !== undefined) ? GAPS[n]
+          : Math.max(8, (SPAN - n*w) / Math.max(1, n-1));
+  let total = n*w + (n-1)*gap;
+  if (total > SPAN){ const k = SPAN/total; w *= k; gap *= k; total = SPAN; }
+
+  const h     = Math.min(BOX.by2 - BOX.by1 - 24, DOORH * (w / DOORW));
+  const room0 = SPAN - total;
+  const off   = SLIDE ? (seeded(S.L.seed || 0.5)() - 0.5) * Math.min(room0, SLIDE) : 0;
+
+  let x = BOX.bx1 + MARGIN + room0/2 + off;
+  for (let i = 0; i < n; i++){
+    room.appendChild(doorway(x, BOX.by2, w, h, 'url(#dark)'));
+    x += w + gap;
+  }
   grime();
 }
 
 function renderChamber(){
   clear(); room.appendChild(defsLow()); shellLow();
-  const w = 74, h = 150;
-  room.appendChild(doorBox(BOX.bx1 + 96,       w, h, 'url(#dark)', 'plain'));
-  room.appendChild(doorBox(BOX.bx2 - 96 - w,   w, h, 'url(#pale)', 'white'));
+  const w = 126, h = Math.min(BOX.by2 - BOX.by1 - 24, 278), gap = 250;
+  const x = (1000 - (2*w + gap)) / 2;
+  room.appendChild(doorway(x,           BOX.by2, w, h, 'url(#dark)', 'plain'));
+  room.appendChild(doorway(x + w + gap, BOX.by2, w, h, 'url(#pale)', 'white'));
   grime();
 }
 
 /* ---- higher field: a round chamber ---- */
 
-const CX = 500, CY = 300, RX = 430, RY = 205, WALL_TOP = 120;
+const CX = 500, CY = 330, RX = 452, RY = 208, WALL_TOP = 158;
 
 function defsHigh(){
   const d = el('defs',{});
   d.innerHTML = GRIT + `
-   <radialGradient id="floorH" cx="0.5" cy="0.45" r="0.75">
-     <stop offset="0" stop-color="#55554e"/><stop offset="1" stop-color="#242422"/></radialGradient>
    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
-     <stop offset="0" stop-color="#767670"/><stop offset="1" stop-color="#3f3f3a"/></linearGradient>`;
+     <stop offset="0" stop-color="#3d3d37"/><stop offset="1" stop-color="#232320"/></linearGradient>
+   <linearGradient id="floorL" x1="0" y1="0" x2="0" y2="1">
+     <stop offset="0" stop-color="#232320"/><stop offset="1" stop-color="#34342f"/></linearGradient>`;
   return d;
 }
 
 function shellHigh(){
+  const band = `M ${CX-RX} ${CY} L ${CX-RX} ${CY-WALL_TOP}
+                A ${RX} ${RY} 0 0 1 ${CX+RX} ${CY-WALL_TOP}
+                L ${CX+RX} ${CY}
+                A ${RX} ${RY} 0 0 0 ${CX-RX} ${CY} Z`;
   room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
-  room.appendChild(el('path',{
-    d:`M ${CX-RX} ${CY} L ${CX-RX} ${CY-WALL_TOP}
-       A ${RX} ${RY} 0 0 1 ${CX+RX} ${CY-WALL_TOP}
-       L ${CX+RX} ${CY}
-       A ${RX} ${RY} 0 0 0 ${CX-RX} ${CY} Z`, fill:'url(#wall)'}));
-  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'url(#floorH)'}));
+  room.appendChild(el('path',{d:band, fill:'url(#wall)'}));
+  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'url(#floorL)'}));
+  tex(band, 'rockA', 0.36); tex(band, 'rockB', 0.14);
+  if (FLOOR === 'pavers') paveDisc();
+  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'#888',
+                                 filter:'url(#rockA)',opacity:0.15,'pointer-events':'none'}));
   room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'none',
-                                 stroke:'#2b2b28','stroke-width':2}));
-  for (let i=1;i<=4;i++)
-    room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX*i/5,ry:RY*i/5,fill:'none',
-                                   stroke:'#2b2b28','stroke-width':1.2,opacity:0.5}));
+                                 stroke:'#191916','stroke-width':1.8,opacity:0.5}));
 }
 
 function doorRing(theta, w, h){
-  /* Doors toward the back of the ellipse are drawn smaller so the ring
-     reads as a room rather than a diagram.                          */
   const x = CX + RX*Math.cos(theta), y = CY + RY*Math.sin(theta);
   const depth = (Math.sin(theta) + 1) / 2;
-  const s = 0.62 + 0.38*depth, ww = w*s, hh = h*s;
-  const yb = y, yt = y - hh;
-  const g = el('g',{class:'door'});
-  g.appendChild(el('rect',{class:'rim',x:x-ww/2-3,y:yt-3,width:ww+6,height:hh+6,
-                           fill:'none',stroke:'#cfcabb','stroke-width':1.8,opacity:0}));
-  g.appendChild(el('path',{class:'leaf',
-    d:`M ${x-ww/2} ${yb} L ${x-ww/2} ${yt+ww*0.45}
-       Q ${x-ww/2} ${yt} ${x} ${yt}
-       Q ${x+ww/2} ${yt} ${x+ww/2} ${yt+ww*0.45}
-       L ${x+ww/2} ${yb} Z`, fill:'url(#dark)'}));
-  g.appendChild(el('path',{d:`M ${x-ww/2} ${yb} L ${x-ww/2} ${yt+ww*0.45} Q ${x-ww/2} ${yt} ${x} ${yt}`,
-                           fill:'none',stroke:'#8b8b82','stroke-width':1.4,opacity:0.4}));
-  return { node:g, depth:depth };
+  const s = 0.62 + 0.38*depth;
+  return { node: doorway(x - (w*s)/2, y, w*s, h*s, 'url(#dark)'), depth: depth };
 }
 
 function renderHigh(n){
   clear(); room.appendChild(defsHigh()); shellHigh();
-  const w = Math.max(20, Math.min(78, 900 / Math.max(n, 4)));
-  const h = w * 1.9;
+  const w = Math.max(22, Math.min(96, 1080 / Math.max(n, 4)));
+  const h = w * 2.30;   /* matched to the lower field's proportion */
+  /* The ring starts at a random angle every room, so a parked cursor
+     lands on a door, on the wall between two, or on nothing.       */
+  const R   = seeded(S.H.seed || 0.5);
+  const rot = R() * Math.PI * 2;
   const parts = [];
-  for (let i = 0; i < n; i++){
-    const theta = -Math.PI/2 + (i/n)*Math.PI*2 + (n === 1 ? 0.35 : 0);
-    parts.push(doorRing(theta, w, h));
-  }
+  for (let i = 0; i < n; i++) parts.push(doorRing(rot + (i/n)*Math.PI*2, w, h));
   parts.sort((a,b) => a.depth - b.depth).forEach(p => room.appendChild(p.node));
   grime();
 }
@@ -827,7 +992,7 @@ function reenter(){
   const cfg = S.cfg, hcfg = S.hcfg;
   S = JSON.parse(JSON.stringify(BLANK));
   S.cfg = cfg; S.hcfg = hcfg;
-  S.L.count = rng(1,6); S.L.history = [S.L.count];
+  S.L.count = rng(1,6); S.L.seed = rnd(); S.L.history = [S.L.count];
   save(); paint(); askName();
 }
 
@@ -886,14 +1051,14 @@ function onDoor(node){
     if (c === 'white'){
       step(() => {
         S.field = 'high'; S.mode = 'field';
-        S.H = { clicks:0, count:20, history:[20], queue:[], armed:null };
+        S.H = { clicks:0, count:20, history:[20], queue:[], armed:null, seed:rnd() };
         save();
       });
     } else {
       step(() => {
         S.mode = 'field';
         S.L.history = []; S.L.queue = []; S.L.kind = null; S.L.forced = false;
-        S.L.count = slide(); S.L.clicks++;
+        S.L.count = slide(); S.L.seed = rnd(); S.L.clicks++;
         save();
       });
     }
@@ -904,9 +1069,10 @@ function onDoor(node){
     step(() => {
       S.H.clicks++;
       if (S.mode === 'dealing'){ S.mode = 'piece'; S.seen = false;
-                                 S.H.count = 1; S.H.queue = []; save(); return; }
+                                 S.H.count = 1; S.H.seed = rnd();
+                                 S.H.queue = []; save(); return; }
       const v = nextH();
-      S.H.count = v; S.H.history.push(v);
+      S.H.count = v; S.H.seed = rnd(); S.H.history.push(v);
       if (S.H.history.length > 40) S.H.history = S.H.history.slice(-40);
       save();
     });
@@ -922,7 +1088,7 @@ function onDoor(node){
   step(() => {
     if (fast) S.L.dead++; else S.L.clicks++;
     const v = nextL(fast);
-    S.L.count = v; S.L.history.push(v);
+    S.L.count = v; S.L.seed = rnd(); S.L.history.push(v);
     if (S.L.history.length > 40) S.L.history = S.L.history.slice(-40);
     /* The exit IS the room at the tail of the run, so it resolves on the
        spot. The chamber is a different room and must not stand in for
@@ -1016,7 +1182,8 @@ document.getElementById('b-reset').onclick  = () => { reenter(); };
 
 /* ---------------- boot ---------------- */
 
-if (S.L.count === null){ S.L.count = rng(1,6); S.L.history = [S.L.count]; save(); }
+if (S.L.count === null){ S.L.count = rng(1,6); S.L.seed = rnd();
+                         S.L.history = [S.L.count]; save(); }
 
 const nbox = document.getElementById('namebox');
 const nin  = document.getElementById('nb-in');
