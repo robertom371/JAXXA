@@ -107,9 +107,11 @@
     <button id="b-exit-d">arm exit 6-1</button>
     <button id="b-exit-u">arm exit 1-6</button>
     <button id="b-six">arm six</button>
+    <button id="b-tease">arm near miss</button>
   </div>
   <div class="grp" id="g-high">
     <button id="b-piece">deal the piece</button>
+    <button id="b-teaseh">arm near miss</button>
   </div>
   <button id="b-home">send home</button>
   <button id="b-rod">rod: toggle</button>
@@ -197,19 +199,32 @@ const DL = {                 /* lower field                                    *
 };
 const DH = { lo:1, hi:20, nearMiss:4, quiet:15 };   /* higher field */
 
-const KEY = 'kiln.chance.ward.v1';
+const KEY  = 'kiln.chance.ward.v1';
+const COLD = 6 * 60 * 60 * 1000;   /* a visit older than this is over */
 const BLANK = {
-  field:'low', mode:'field', rod:true, from:'low', seen:false,
+  field:'low', mode:'field', rod:true, from:'low', seen:false, ts:0,
   L:{ clicks:0, dead:0, count:null, history:[], queue:[], kind:null,
       forced:false, armed:null, pending:false, override:false },
-  H:{ clicks:0, count:null, history:[], queue:[] },
+  H:{ clicks:0, count:null, history:[], queue:[], armed:null },
   cfg:Object.assign({}, DL), hcfg:Object.assign({}, DH)
 };
 
+let STALE = false;
 let S = load();
 function load(){
   try { const r = localStorage.getItem(KEY);
         if (r){ const o = JSON.parse(r);
+                /* A visit left open across sessions is not a visit. Without
+                   this, someone who walked this in November opens the same
+                   link in February standing in the higher field holding a
+                   piece. Config survives; the walk does not.            */
+                if (o.ts && Date.now() - o.ts > COLD){
+                  STALE = true;
+                  const f = JSON.parse(JSON.stringify(BLANK));
+                  f.cfg  = Object.assign({}, DL, o.cfg  || {});
+                  f.hcfg = Object.assign({}, DH, o.hcfg || {});
+                  return f;
+                }
                 o.cfg  = Object.assign({}, DL, o.cfg  || {});
                 o.hcfg = Object.assign({}, DH, o.hcfg || {});
                 o.L    = Object.assign({}, BLANK.L, o.L || {});
@@ -218,6 +233,7 @@ function load(){
   return JSON.parse(JSON.stringify(BLANK));
 }
 function save(){
+  S.ts = Date.now();
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}
   pushState();   /* SYNC hook. No-op offline. */
 }
@@ -322,6 +338,8 @@ function runCommand(c){
     case 'exit-down': S.L.armed = 'exit-down'; break;
     case 'exit-up':   S.L.armed = 'exit-up';   break;
     case 'six':       S.L.armed = 'six';       break;
+    case 'tease':     if (S.field === 'high') S.H.armed = 'chain';
+                      else S.L.armed = 'tease'; break;
     case 'piece':     if (S.field === 'high' && S.mode === 'field') S.mode = 'dealing'; break;
     case 'rod':       S.rod = false; break;
     case 'home':      toHub(); return;
@@ -386,25 +404,29 @@ function guardHardL(v){
   return v;
 }
 
-function startRepeatL(){
+function startRepeatL(force){
   /* The same room count several times running. It means nothing and it
      never has, and a table keeping a tally will sit up every time.
      THREE, FOUR AND FIVE ONLY. Six is the payout and is never seeded
      here, and the value is chosen away from the current room so a
      chain of five can never accidentally become a chain of six.     */
-  S.L.queue = new Array(pick([3,3,3,3,4,4,5])).fill(anyNot(S.L.count));
+  S.L.queue = new Array(force || pick([3,3,3,3,4,4,5])).fill(anyNot(S.L.count));
   S.L.kind  = 'tease-repeat';
   return true;
 }
 
-function startTeaseL(){
-  if (pct(S.cfg.repeatShare)) return startRepeatL();
-  const len  = pick([3,3,3,3,4,4,4,5]);
+/* force runs the near miss at its full length: five identical, or a
+   descent that stops one room short. That is what an armed near miss
+   is for. The unforced version keeps its own spread.               */
+function startTeaseL(force){
+  if (pct(S.cfg.repeatShare)) return startRepeatL(force ? 5 : 0);
+  const len  = force ? 5 : pick([3,3,3,3,4,4,4,5]);
   const down = pct(50);
   /* Teases do NOT always start at the extreme. A four three two is a
      near miss that never threatened anything, and mixing these in
      breaks the correlation where every one is followed by a two.    */
-  const start = down ? pick([6,5,5,4,4]) : pick([1,2,2,3,3]);
+  const start = force ? (down ? 6 : 1)
+                      : (down ? pick([6,5,5,4,4]) : pick([1,2,2,3,3]));
   const q = [];
   for (let i = 0; i < len; i++){
     const v = down ? start - i : start + i;
@@ -470,6 +492,9 @@ function nextL(fast){
   if (S.L.armed === 'exit-down'){ startExitL(true);  S.L.forced = S.L.override = true; S.L.armed = null; }
   if (S.L.armed === 'exit-up')  { startExitL(false); S.L.forced = S.L.override = true; S.L.armed = null; }
   if (S.L.armed === 'six')      { startSixL();       S.L.forced = S.L.override = true; S.L.armed = null; }
+  /* A near miss is not a payout, so it takes neither flag. It can be
+     armed below any budget and it never opens anything.            */
+  if (S.L.armed === 'tease')    { S.L.armed = null; startTeaseL(true); }
 
   if (!S.L.queue.length){
     if      (uExit()  && pct(S.cfg.exitRun)) startExitL(pct(50));
@@ -559,9 +584,9 @@ function guardH(v){
   return x;
 }
 
-function startChainH(){
+function startChainH(force){
   const lo = LO(), hi = HI();
-  const len = pick([3,3,3,4]);
+  const len = force || pick([3,3,3,4]);
   if (hi - lo + 1 < len + 1) return false;
 
   if (pct(50)){
@@ -590,6 +615,12 @@ function startChainH(){
 
 function nextH(){
   if (S.H.queue.length) return S.H.queue.shift();
+  if (S.H.armed){
+    /* Retry: the guards reject a chain that would run past four, and
+       both the shape and the value reroll on each attempt.        */
+    S.H.armed = null;
+    for (let i = 0; i < 24; i++) if (startChainH(4)) return S.H.queue.shift();
+  }
   if (S.H.clicks > S.hcfg.quiet && pct(S.hcfg.nearMiss) && startChainH())
     return S.H.queue.shift();
   return guardH(noiseH());
@@ -797,7 +828,7 @@ function reenter(){
   S = JSON.parse(JSON.stringify(BLANK));
   S.cfg = cfg; S.hcfg = hcfg;
   S.L.count = rng(1,6); S.L.history = [S.L.count];
-  save(); paint();
+  save(); paint(); askName();
 }
 
 aHub.addEventListener('click', toHub);
@@ -855,7 +886,7 @@ function onDoor(node){
     if (c === 'white'){
       step(() => {
         S.field = 'high'; S.mode = 'field';
-        S.H = { clicks:0, count:20, history:[20], queue:[] };
+        S.H = { clicks:0, count:20, history:[20], queue:[], armed:null };
         save();
       });
     } else {
@@ -977,6 +1008,8 @@ document.getElementById('b-exit-d').onclick = () => { S.L.armed = 'exit-down'; s
 document.getElementById('b-exit-u').onclick = () => { S.L.armed = 'exit-up';   save(); refresh(); };
 document.getElementById('b-six').onclick    = () => { S.L.armed = 'six';       save(); refresh(); };
 document.getElementById('b-piece').onclick  = () => { S.mode = 'dealing';      save(); refresh(); };
+document.getElementById('b-tease').onclick  = () => { S.L.armed = 'tease';     save(); refresh(); };
+document.getElementById('b-teaseh').onclick = () => { S.H.armed = 'chain';     save(); refresh(); };
 document.getElementById('b-home').onclick   = () => { toHub(); };
 document.getElementById('b-rod').onclick    = () => { S.rod = !S.rod; save(); rodVisible(); refresh(); };
 document.getElementById('b-reset').onclick  = () => { reenter(); };
@@ -987,20 +1020,34 @@ if (S.L.count === null){ S.L.count = rng(1,6); S.L.history = [S.L.count]; save()
 
 const nbox = document.getElementById('namebox');
 const nin  = document.getElementById('nb-in');
+let listening = false;
+
+/* Shown on every entry, prefilled and selected, so the threshold stays a
+   threshold without becoming a form. The id underneath never changes:
+   a new id every re-entry would leave a dead row on the console under
+   the same name, and the name is the only handle it has.            */
+function askName(){
+  nin.value = NAME || '';
+  nbox.classList.add('show');
+  setTimeout(() => { nin.focus(); nin.select(); }, 50);
+}
+
 function begin(){
   const v = nin.value.trim();
   if (!v) return;
   NAME = v;
   try { localStorage.setItem('kiln.name', NAME); } catch(e){}
   nbox.classList.remove('show');
-  applyRemote();
+  if (!listening){ listening = true; applyRemote(); } else { pushState(); }
   paint();
 }
+
 document.getElementById('nb-go').addEventListener('click', begin);
 nin.addEventListener('keydown', e => { if (e.key === 'Enter') begin(); });
 
-if (!NAME){ nbox.classList.add('show'); setTimeout(() => nin.focus(), 50); paint(); }
-else { applyRemote(); paint(); }
+paint();
+if (!NAME || STALE) askName();
+else { listening = true; applyRemote(); }
 </script>
 </body>
 </html>
