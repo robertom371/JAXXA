@@ -634,7 +634,29 @@ const NS = 'http://www.w3.org/2000/svg';
 const room = document.getElementById('room');
 const el = (n,a) => { const e = document.createElementNS(NS,n);
                       for (const k in a) e.setAttribute(k,a[k]); return e; };
-function clear(){ while (room.firstChild) room.removeChild(room.firstChild); }
+function clearNode(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+
+/* ---- scene cache ----
+   The shell is identical in every room of a given field: same walls,
+   same floor, fixed seed. Only the doors change. Rebuilding all of it
+   on every click meant re-evaluating six fractal turbulence filters
+   and about 170 slab paths to draw between one and six doorways.
+   Now the shell and the grime are built once per field and only the
+   door layer is torn down and rebuilt.                             */
+let SINK = room, SCENE = null, gDoors = null;
+
+function ensureScene(kind){
+  if (SCENE === kind){ SINK = gDoors; return; }
+  SCENE = kind;
+  clearNode(room);
+  room.appendChild(kind === 'high' ? defsHigh() : defsLow());
+  const bg = el('g',{}); room.appendChild(bg);
+  gDoors   = el('g',{}); room.appendChild(gDoors);
+  const fg = el('g',{}); room.appendChild(fg);
+  SINK = bg; if (kind === 'high') shellHigh(); else shellLow();
+  SINK = fg; grime();
+  SINK = gDoors;
+}
 
 /* Layout jitter is SEEDED PER ROOM, not rolled per render. A repaint has
    to reproduce the room exactly. Otherwise the doors twitch whenever
@@ -683,13 +705,13 @@ const GRIT = `
      <stop offset="0" stop-color="#83837a"/><stop offset="1" stop-color="#474741"/></linearGradient>`;
 
 function tex(d, filt, op){
-  room.appendChild(el('path',{ d:d, fill:'#888', filter:'url(#'+filt+')',
+  SINK.appendChild(el('path',{ d:d, fill:'#888', filter:'url(#'+filt+')',
                                opacity:op, 'pointer-events':'none' }));
 }
 function grime(){
-  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#fff',
+  SINK.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#fff',
                               filter:'url(#grain)',opacity:0.30,'pointer-events':'none'}));
-  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#000',
+  SINK.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#000',
                               filter:'url(#blot)',opacity:0.40,'pointer-events':'none'}));
 }
 
@@ -715,7 +737,7 @@ function slab(pts, gap, fill){
     const k = Math.min(gap, d*0.4);
     return (p[0] + dx/d*k).toFixed(1) + ' ' + (p[1] + dy/d*k).toFixed(1);
   });
-  room.appendChild(el('path',{ d:'M' + q.join(' L ') + ' Z', fill:fill,
+  SINK.appendChild(el('path',{ d:'M' + q.join(' L ') + ' Z', fill:fill,
                                'pointer-events':'none' }));
 }
 
@@ -859,12 +881,12 @@ function shellLow(){
   const floor = `M0,${fy} L${bx1},${by2} L${bx2},${by2} L1000,${fy} Z`;
   const back  = `M${bx1},${by1} L${bx2},${by1} L${bx2},${by2} L${bx1},${by2} Z`;
 
-  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
-  room.appendChild(el('path',{d:ceil, fill:'url(#ceil)'}));
-  room.appendChild(el('path',{d:left, fill:'url(#left)'}));
-  room.appendChild(el('path',{d:right,fill:'url(#right)'}));
-  room.appendChild(el('path',{d:floor,fill:'url(#floorL)'}));   /* the bed */
-  room.appendChild(el('path',{d:back, fill:'url(#back)'}));
+  SINK.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
+  SINK.appendChild(el('path',{d:ceil, fill:'url(#ceil)'}));
+  SINK.appendChild(el('path',{d:left, fill:'url(#left)'}));
+  SINK.appendChild(el('path',{d:right,fill:'url(#right)'}));
+  SINK.appendChild(el('path',{d:floor,fill:'url(#floorL)'}));   /* the bed */
+  SINK.appendChild(el('path',{d:back, fill:'url(#back)'}));
 
   tex(back,  'rockA', 0.36);  tex(back,  'rockB', 0.14);
   tex(left,  'rockA', 0.20);  tex(right, 'rockA', 0.20);
@@ -873,12 +895,12 @@ function shellLow(){
   if (FLOOR === 'pavers') pave();
   tex(floor, 'rockA', 0.15);
 
-  room.appendChild(el('path',{d:`M${bx1},${by2} L${bx2},${by2}`, fill:'none',
+  SINK.appendChild(el('path',{d:`M${bx1},${by2} L${bx2},${by2}`, fill:'none',
                               stroke:'#191916','stroke-width':1.8,opacity:0.5}));
 }
 
 function renderLow(n){
-  clear(); room.appendChild(defsLow()); shellLow();
+  ensureScene('low'); clearNode(gDoors);
   const SPAN = (BOX.bx2 - BOX.bx1) - MARGIN*2;
 
   let w   = (WIDTHS[n] !== undefined) ? WIDTHS[n] : DOORW;
@@ -893,19 +915,17 @@ function renderLow(n){
 
   let x = BOX.bx1 + MARGIN + room0/2 + off;
   for (let i = 0; i < n; i++){
-    room.appendChild(doorway(x, BOX.by2, w, h, 'url(#dark)'));
+    gDoors.appendChild(doorway(x, BOX.by2, w, h, 'url(#dark)'));
     x += w + gap;
   }
-  grime();
 }
 
 function renderChamber(){
-  clear(); room.appendChild(defsLow()); shellLow();
+  ensureScene('low'); clearNode(gDoors);
   const w = 126, h = Math.min(BOX.by2 - BOX.by1 - 24, 278), gap = 250;
   const x = (1000 - (2*w + gap)) / 2;
-  room.appendChild(doorway(x,           BOX.by2, w, h, 'url(#dark)', 'plain'));
-  room.appendChild(doorway(x + w + gap, BOX.by2, w, h, 'url(#pale)', 'white'));
-  grime();
+  gDoors.appendChild(doorway(x,           BOX.by2, w, h, 'url(#dark)', 'plain'));
+  gDoors.appendChild(doorway(x + w + gap, BOX.by2, w, h, 'url(#pale)', 'white'));
 }
 
 /* ---- higher field: a round chamber ---- */
@@ -927,14 +947,14 @@ function shellHigh(){
                 A ${RX} ${RY} 0 0 1 ${CX+RX} ${CY-WALL_TOP}
                 L ${CX+RX} ${CY}
                 A ${RX} ${RY} 0 0 0 ${CX-RX} ${CY} Z`;
-  room.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
-  room.appendChild(el('path',{d:band, fill:'url(#wall)'}));
-  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'url(#floorL)'}));
+  SINK.appendChild(el('rect',{x:0,y:0,width:1000,height:620,fill:'#101010'}));
+  SINK.appendChild(el('path',{d:band, fill:'url(#wall)'}));
+  SINK.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'url(#floorL)'}));
   tex(band, 'rockA', 0.36); tex(band, 'rockB', 0.14);
   if (FLOOR === 'pavers') paveDisc();
-  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'#888',
+  SINK.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'#888',
                                  filter:'url(#rockA)',opacity:0.15,'pointer-events':'none'}));
-  room.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'none',
+  SINK.appendChild(el('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,fill:'none',
                                  stroke:'#191916','stroke-width':1.8,opacity:0.5}));
 }
 
@@ -946,7 +966,7 @@ function doorRing(theta, w, h){
 }
 
 function renderHigh(n){
-  clear(); room.appendChild(defsHigh()); shellHigh();
+  ensureScene('high'); clearNode(gDoors);
   const w = Math.max(22, Math.min(96, 1080 / Math.max(n, 4)));
   const h = w * 2.30;   /* matched to the lower field's proportion */
   /* The ring starts at a random angle every room, so a parked cursor
@@ -955,8 +975,7 @@ function renderHigh(n){
   const rot = R() * Math.PI * 2;
   const parts = [];
   for (let i = 0; i < n; i++) parts.push(doorRing(rot + (i/n)*Math.PI*2, w, h));
-  parts.sort((a,b) => a.depth - b.depth).forEach(p => room.appendChild(p.node));
-  grime();
+  parts.sort((a,b) => a.depth - b.depth).forEach(p => gDoors.appendChild(p.node));
 }
 
 /* ============================================================
